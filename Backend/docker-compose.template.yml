@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   webapi:
     build:
@@ -9,21 +7,21 @@ services:
       - "5000:8080"   # Host:Container
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "Server=YourServerName;Database=YourDBName;User=YourUserName;Password=YourPassword;TrustServerCertificate=True;"
-      RUN_MIGRATIONS: "true"  # Migration Control toggle
+      ConnectionStrings__DefaultConnection: "Server=EventManagerServer;Database=EventManagerDb;User=sa;Password=YourDbPassword;TrustServerCertificate=True;"
+      RUN_MIGRATIONS: "true"  # Add this line for migration control
       EmailSettings__GmailUser: "YourMailSenderEmail"
       EmailSettings__GmailPass: "YourMailSenderPassword"
     depends_on:
-      - db
+      - eventmanagerserver
     networks:
       - app-network
 
-  db:
+  eventmanagerserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlserver
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "YourPassword"
+      SA_PASSWORD: "YourDbPassword"
     ports:
       - "1433:1433"
     networks:
