@@ -54,14 +54,11 @@ namespace EventManagerBackend.Extensions
             var dbContext = services.GetRequiredService<ApplicationDbContext>();
 
             // Seed roles (static)
-            await RoleSeeder.SeedAsync(roleManager);
+            await RolesSeeder.SeedAsync(roleManager);
 
             // Seed admin user (static)
-            await AdminSeeder.SeedAsync(userManager, roleManager);
+            await AdministratorSeeder.SeedAsync(userManager, roleManager);
         }
-
-
-
 
         // Map Identity API endpoints
         public static void MapEventEndpoints(this WebApplication app)
