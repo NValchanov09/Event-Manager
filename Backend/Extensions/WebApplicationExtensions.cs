@@ -35,11 +35,11 @@ namespace EventManagerBackend.Extensions
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             var dbContext = services.GetRequiredService<ApplicationDbContext>();
 
-            await RoleSeeder.SeedAsync(roleManager);
-            await AdminSeeder.SeedAsync(userManager, roleManager);
+            await RolesSeeder.SeedAsync(roleManager);
+            await AdministratorSeeder.SeedAsync(userManager, roleManager);
 
-            var dbSeeder = new DbSeeder(dbContext);
-            await dbSeeder.Seed();
+            var dbSeeder = new DataSeeder(dbContext);
+            await dbSeeder.SeedAsync();
         }
 
 

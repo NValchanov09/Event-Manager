@@ -16,7 +16,7 @@ namespace EventManagerBackend.Extensions
         {
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<ISubmitService, SubmitService>();
-            services.AddTransient<DbSeeder>();
+            services.AddTransient<DataSeeder>();
             return services;
         }
         // Add application DbContext to the IServiceCollection
