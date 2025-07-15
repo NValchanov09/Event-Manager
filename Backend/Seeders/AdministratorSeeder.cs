@@ -3,7 +3,7 @@ using EventManagerBackend.Models;
 
 namespace EventManagerBackend.Seeders
 {
-    public static class AdminSeeder
+    public static class AdministratorSeeder
     {
         public static async Task SeedAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
