@@ -13,7 +13,7 @@ namespace EventManagerBackend.Seeders
         {
             using var scope = serviceProvider.CreateScope();
 
-            var context = scope.ServiceProvider.GetRequiredService<EventDbContext>();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 

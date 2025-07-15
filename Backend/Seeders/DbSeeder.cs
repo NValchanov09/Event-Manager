@@ -6,9 +6,9 @@ namespace EventManagerBackend.Seeders
 {
     public class DbSeeder
     {
-        private readonly EventDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DbSeeder(EventDbContext context)
+        public DbSeeder(ApplicationDbContext context)
         {
             _context = context;
         }

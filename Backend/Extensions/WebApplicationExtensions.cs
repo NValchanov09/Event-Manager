@@ -33,7 +33,7 @@ namespace EventManagerBackend.Extensions
 
             var userManager = services.GetRequiredService<UserManager<User>>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-            var dbContext = services.GetRequiredService<EventDbContext>();
+            var dbContext = services.GetRequiredService<ApplicationDbContext>();
 
             await RoleSeeder.SeedAsync(roleManager);
             await AdminSeeder.SeedAsync(userManager, roleManager);
@@ -51,7 +51,7 @@ namespace EventManagerBackend.Extensions
 
             var userManager = services.GetRequiredService<UserManager<User>>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-            var dbContext = services.GetRequiredService<EventDbContext>();
+            var dbContext = services.GetRequiredService<ApplicationDbContext>();
 
             // Seed roles (static)
             await RoleSeeder.SeedAsync(roleManager);

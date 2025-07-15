@@ -14,7 +14,7 @@ namespace EventManagerBackend.Extensions
                 return;
 
             using var scope = app.Services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<EventDbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
             var retryPolicy = Policy
                 .Handle<SqlException>()

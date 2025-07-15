@@ -22,7 +22,7 @@ namespace EventManagerBackend.Extensions
         // Add application DbContext to the IServiceCollection
         public static IServiceCollection AddAppDbContext(this IServiceCollection services, IConfiguration config)
         {
-            services.AddDbContext<EventDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
             return services;
         }
@@ -31,7 +31,7 @@ namespace EventManagerBackend.Extensions
         {
             services.AddIdentityCore<User>()
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<EventDbContext>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddIdentityApiEndpoints<User>();

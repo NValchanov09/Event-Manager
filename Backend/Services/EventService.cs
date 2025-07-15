@@ -7,10 +7,10 @@ using System.Globalization;
 
 public class EventService : IEventService
 {
-    private readonly EventDbContext _context;
+    private readonly ApplicationDbContext _context;
 
 
-    public EventService(EventDbContext context)
+    public EventService(ApplicationDbContext context)
     {
         _context = context;
     }

@@ -6,9 +6,9 @@ using EventManagerBackend.Models.DTOs;
 
 public class SubmitService : ISubmitService
 {
-    private readonly EventDbContext _context;
+    private readonly ApplicationDbContext _context;
 
-    public SubmitService(EventDbContext context)
+    public SubmitService(ApplicationDbContext context)
     {
         _context = context;
     }

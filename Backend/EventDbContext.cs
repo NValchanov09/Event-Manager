@@ -6,12 +6,12 @@ using System.Text.Json;
 
 namespace EventManagerBackend
 {
-    public class EventDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public DbSet<Submit> Submits { get; set; }
         public DbSet<Event> Events { get; set; }
 
-        public EventDbContext(DbContextOptions<EventDbContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 

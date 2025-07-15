@@ -11,7 +11,7 @@ using EventManagerBackend;
 
 namespace EventManagerBackend.Migrations
 {
-    [DbContext(typeof(EventDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250710185034_Initial")]
     partial class Initial
     {
