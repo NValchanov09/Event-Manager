@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventManagerBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250717170652_Initial")]
+    [Migration("20250717175714_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -68,7 +68,7 @@ namespace EventManagerBackend.Migrations
                     b.ToTable("Events");
                 });
 
-            modelBuilder.Entity("EventManagerBackend.Models.Submit", b =>
+            modelBuilder.Entity("EventManagerBackend.Models.Submission", b =>
                 {
                     b.Property<int>("EventId")
                         .HasColumnType("int");
@@ -76,14 +76,14 @@ namespace EventManagerBackend.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Answers")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Submissions")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsOnWaitingList")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -92,7 +92,7 @@ namespace EventManagerBackend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Submits");
+                    b.ToTable("Submissions");
                 });
 
             modelBuilder.Entity("EventManagerBackend.Models.User", b =>
@@ -303,7 +303,7 @@ namespace EventManagerBackend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("EventManagerBackend.Models.Submit", b =>
+            modelBuilder.Entity("EventManagerBackend.Models.Submission", b =>
                 {
                     b.HasOne("EventManagerBackend.Models.Event", "Event")
                         .WithMany("Submissions")

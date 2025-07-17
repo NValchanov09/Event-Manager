@@ -223,30 +223,7 @@ public class EventService : IEventService
 
         if (validUsers != null)
         {
-<<<<<<< Updated upstream
-            foreach (var user in validUsers)
-            {
-                var email = user.Email!;
-                var userName = email.Split('@')[0];
-
-                await emailSender.SendEmailAsync(
-                    email,
-                    $"Обновено събитие: {ev.Name}",
-                    $@"
-                    <html>
-                        <body>
-                            <p>Здравейте, {userName},</p>
-                            <p>Искаме да Ви уведомим, че събитието <strong>{ev.Name}</strong>, планирано за {ev.Date:dd.MM.yyyy}, беше <strong>обновено</strong>.</p>
-                            <p>Поради направените промени, Вашата предишна регистрация беше <strong>изтрита</strong>. Моля, регистрирайте се отново, ако желаете да участвате.</p>
-                            <p>Ако имате въпроси, не се колебайте да се свържете с администратор.</p>
-                            <p>С уважение,<br>Екипът по управление на събития</p>
-                        </body>
-                    </html>");
-            }
             _context.Submissions.RemoveRange(ev.Submissions);
-=======
-            _context.Submits.RemoveRange(ev.Submissions);
->>>>>>> Stashed changes
         }
 
         EventMapper.UpdateEntity(ev, dto);
