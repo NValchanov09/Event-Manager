@@ -36,10 +36,11 @@ export interface FilledField {
 }
 
 export interface GetSubmissionDto {
-	submissions: FilledField[];
-	date: string;
+	answers: FilledField[];
+	createdAt: string;
 	email: string;
 	userId: string;
+	isOnWaitingList: boolean;
 }
 
 export interface CreateEventResponse {

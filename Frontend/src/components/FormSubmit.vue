@@ -41,7 +41,7 @@ const {
 	if (props.userSignedUp && props.eventId) {
 		const prevSubmission = await getSubmission(props.eventId.toString());
 		if (prevSubmission) {
-			submission.value = prevSubmission.submissions;
+			submission.value = prevSubmission.answers;
 		}
 	}
 });

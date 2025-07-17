@@ -140,9 +140,9 @@ watch(eventError, () => {
 					class="transition-colors">
 					<td
 						class="px-6 py-4 whitespace-nowrap text-white"
-						:data-tooltip="formatDateTime(submission.date)">
+						:data-tooltip="formatDateTime(submission.createdAt)">
 						<div class="truncate max-w-[200px]">
-							{{ formatDateTime(submission.date) }}
+							{{ formatDateTime(submission.createdAt) }}
 						</div>
 					</td>
 					<td
@@ -157,12 +157,12 @@ watch(eventError, () => {
 						:key="field.id"
 						class="px-6 py-4 whitespace-nowrap text-white"
 						:data-tooltip="
-							getSubmissionField(submission.submissions, field.id)
+							getSubmissionField(submission.answers, field.id)
 						">
 						<div class="truncate max-w-[200px]">
 							{{
 								getSubmissionField(
-									submission.submissions,
+									submission.answers,
 									field.id
 								)
 							}}
