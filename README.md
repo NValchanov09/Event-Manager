@@ -39,23 +39,27 @@ I ([**NValchanov09**](https://github.com/NValchanov09)) worked on this repositor
 
 ## 🖥️ Tech Stack
 
-| Frontend  | Backend             | Database | Other            |
-|-----------|---------------------|----------|------------------|
-| `Vue.js`       | `ASP.NET Core` (.NET 9)       | `MSSQL Server` | `Docker` |
-| `TypeScript` | `Entity Framework` |   `Docker (containerized)`     | `Swagger UI`     |
+| Frontend     | Backend                 | Other           |
+|--------------|-------------------------|-----------------|
+| `Vue.js`     | `ASP.NET Core` (.NET 9) | `Git/Github`    |
+| `TypeScript` | `Entity Framework`      | `Docker`        |
+| `Tailwind`   | `MailKit`               | `Swagger UI`    |
+| `HTML+CSS`   | `MSSQL`                 | `Node.js (npm)` |
 
 ---
 
 ## 🖥️ Local Deployment Instructions
 
 > [!IMPORTANT]
->  - For local deployment you need these prerequisites installedon the newest version:
+>  - For local deployment you need these prerequisites installed on the newest version:
 >    
 >    - Any coding IDE
 >    - Git
 >    - Docker Desktop
 >    - WSL (Windows Subsystems for Linux)
 >    - Node.js
+
+
 
 ## 1. **Clone the repository**:
 
@@ -132,8 +136,10 @@ Here are the admin credentials:
 - Email : admin@example.com
 - Password : Admin123!
 
+
 If you logged in the administrator account, from the users menu in the navigation bar you can make other users administrators.
 
+---
 
 > [!NOTE]
 > Thanks for reading all this (or atleast some of it) and using this application. ❤️
