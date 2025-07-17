@@ -15,7 +15,7 @@ namespace EventManagerBackend.Extensions
         public static IServiceCollection AddAppServices(this IServiceCollection services)
         {
             services.AddScoped<IEventService, EventService>();
-            services.AddScoped<ISubmitService, SubmitService>();
+            services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddTransient<DataSeeder>();
             return services;
         }

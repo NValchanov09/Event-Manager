@@ -5,15 +5,15 @@ using System.Text.Json.Serialization;
 
 namespace EventManagerBackend.Models
 {
-    public class Submit
+    public class Submission
     {
         [Key]
         public int EventId { get; set; }
         [Key]
         public string? UserId { get; set; }
+        public IList<Answer>? Answers { get; set; }
         [Required]
-        public DateTime? Date { get; set; }
-        public IList<Submission>? Submissions { get; set; }
+        public bool? IsOnWaitingList { get; set; }
         [Required]
         public DateTime? CreatedAt { get; set; }
         [Required]

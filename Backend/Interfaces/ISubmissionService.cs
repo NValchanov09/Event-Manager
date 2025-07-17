@@ -4,12 +4,12 @@ using EventManagerBackend.Models.DTOs;
 
 namespace EventManagerBackend
 {
-    public interface ISubmitService
+    public interface ISubmissionService
     {
-        List<SubmitSummaryDto> GetSubmitsByEventId(int eventId);
-        Submit? GetSubmitByEventAndUser(int eventId, string userId);
-        IResult Create(int eventId, string userId, CreateSubmitDto dto);
-        IResult UpdateSubmission(int eventId, string userId, UpdateSubmitDto dto);
+        List<SubmissionSummaryDto> GetSubmissionsByEventId(int eventId);
+        Submission? GetSubmissionByEventAndUser(int eventId, string userId);
+        IResult Create(int eventId, string userId, CreateSubmissionDto dto);
+        IResult UpdateSubmission(int eventId, string userId, UpdateSubmissionDto dto);
         Task<IResult> RemoveUserFromEvent(int eventId, string userId, IEmailSender emailSender);
         Task<bool> AdminRemoveUserFromEvent(int eventId, string userId, IEmailSender emailSender);
     }

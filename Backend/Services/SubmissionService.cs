@@ -4,63 +4,65 @@ using EventManagerBackend;
 using EventManagerBackend.Models;
 using EventManagerBackend.Models.DTOs;
 
-public class SubmitService : ISubmitService
+public class SubmissionService : ISubmissionService
 {
     private readonly ApplicationDbContext _context;
 
-    public SubmitService(ApplicationDbContext context)
+    public SubmissionService(ApplicationDbContext context)
     {
         _context = context;
     }
-    public List<SubmitSummaryDto> GetSubmitsByEventId(int eventId)
+    public List<SubmissionSummaryDto> GetSubmissionsByEventId(int eventId)
     {
-        return _context.Submits
+        return _context.Submissions
             .Include(s => s.User)
             .Where(s => s.EventId == eventId)
-            .Select(s => SubmitMapper.ToSummaryDto(s))
+            .Select(s => SubmissionMapper.ToSummaryDto(s))
             .ToList();
     }
 
-    public Submit? GetSubmitByEventAndUser(int eventId, string userId)
+    public Submission? GetSubmissionByEventAndUser(int eventId, string userId)
     {
-        return _context.Submits
+        return _context.Submissions
             .FirstOrDefault(s => s.EventId == eventId && s.UserId == userId);
     }
 
-    public IResult Create(int eventId, string userId, CreateSubmitDto dto)
+    public IResult Create(int eventId, string userId, CreateSubmissionDto dto)
     {
-        if (_context.Submits.Any(s => s.EventId == eventId && s.UserId == userId))
-            return Results.Conflict(new { error = "Потребителят е вече записан за това събитие!" });
+        if (!_context.Events.Any(e => e.Id == eventId))
+            return Results.BadRequest(new { error = "Събитието не е намерено!" });
 
-        if (_context.Submits.Where(e => e.EventId == eventId).Count() >= _context.Events.Find(eventId)!.PeopleLimit)
-            return Results.BadRequest(new { error = "Няма свободни места!" });
+        if (_context.Submissions.Any(s => s.EventId == eventId && s.UserId == userId))
+            return Results.Conflict(new { error = "Потребителят е вече записан за това събитие!" });
 
         if (_context.Events.Find(eventId).SignUpDeadline < DateTime.UtcNow)
             return Results.BadRequest(new { error = "Срокът за записване е изтекъл!"});
 
-        var entity = SubmitMapper.ToEntity(eventId, userId, dto);
-        _context.Submits.Add(entity);
-        return _context.SaveChanges() > 0 ? Results.Created($"/submits/{eventId}", dto) : Results.InternalServerError("Failed to save submit");
+        bool isOnWaitingList = _context.Events.Find(eventId).PeopleLimit <= _context.Submissions
+            .Count(s => s.EventId == eventId);
+
+        var entity = SubmissionMapper.ToEntity(eventId, userId, isOnWaitingList, dto);
+        _context.Submissions.Add(entity);
+        return _context.SaveChanges() > 0 ? Results.Created($"/submissions/{eventId}", dto) : Results.InternalServerError("Failed to save submission");
     }
 
-    public IResult UpdateSubmission(int eventId, string userId, UpdateSubmitDto dto)
+    public IResult UpdateSubmission(int eventId, string userId, UpdateSubmissionDto dto)
     {
-        var submit = _context.Submits
+        var submission = _context.Submissions
             .Include(s => s.Event)
             .FirstOrDefault(s => s.EventId == eventId && s.UserId == userId);
 
-        if (submit == null)
+        if (submission == null)
             return Results.BadRequest(new { error = "Не е намерена заявка"});
 
-        if (submit.Event.SignUpDeadline < DateTime.UtcNow)
+        if (submission.Event.SignUpDeadline < DateTime.UtcNow)
             return Results.BadRequest(new { error = "Срокът за записване е изтекъл!" });
 
-        SubmitMapper.UpdateEntity(submit, dto);
-        submit.Date = DateTime.UtcNow;
-        submit.UpdatedAt = DateTime.UtcNow;
+        SubmissionMapper.UpdateEntity(submission, dto);
+        submission.UpdatedAt = DateTime.UtcNow;
 
-        _context.Submits.Update(submit);
-        return _context.SaveChanges() > 0 ? Results.Created($"/submits/{submit.EventId}", new { submit }) : Results.InternalServerError(new { error = "Oбновяването на заявката мина неуспешно." });
+        _context.Submissions.Update(submission);
+        return _context.SaveChanges() > 0 ? Results.Created($"/submissions/{submission.EventId}", new { submission }) : Results.InternalServerError(new { error = "Oбновяването на заявката мина неуспешно." });
     }
 
 
@@ -68,7 +70,7 @@ public class SubmitService : ISubmitService
     public async Task<bool> AdminRemoveUserFromEvent(int eventId, string userId, IEmailSender _emailSender)
     {
         // Fetch submission with related user and event data
-        var submission = await _context.Submits
+        var submission = await _context.Submissions
             .Include(s => s.User)
             .Include(s => s.Event)
             .FirstOrDefaultAsync(s => s.EventId == eventId && s.UserId == userId);
@@ -86,7 +88,7 @@ public class SubmitService : ISubmitService
         var eventDate = submission.Event.Date?.ToString("MMMM d, yyyy") ?? "бъдеща дата";
 
         // Remove the submission
-        _context.Submits.Remove(submission);
+        _context.Submissions.Remove(submission);
         var success = await _context.SaveChangesAsync() > 0;
 
         // Send email only if removal succeeded
@@ -113,7 +115,7 @@ public class SubmitService : ISubmitService
     public async Task<IResult> RemoveUserFromEvent(int eventId, string userId, IEmailSender _emailSender)
     {
         // Fetch submission with related user and event data
-        var submission = await _context.Submits
+        var submission = await _context.Submissions
             .Include(s => s.User)
             .Include(s => s.Event)
             .FirstOrDefaultAsync(s => s.EventId == eventId && s.UserId == userId);
@@ -137,7 +139,7 @@ public class SubmitService : ISubmitService
         var eventDate = submission.Event.Date?.ToString("MMMM d, yyyy") ?? "бъдеща дата";
 
         // Remove the submission
-        _context.Submits.Remove(submission);
+        _context.Submissions.Remove(submission);
         var success = await _context.SaveChangesAsync() > 0;
 
         // Send email only if removal succeeded

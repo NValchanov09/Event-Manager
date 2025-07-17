@@ -8,7 +8,7 @@ namespace EventManagerBackend
 {
     public class ApplicationDbContext : IdentityDbContext<User>
     {
-        public DbSet<Submit> Submits { get; set; }
+        public DbSet<Submission> Submissions { get; set; }
         public DbSet<Event> Events { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -40,12 +40,12 @@ namespace EventManagerBackend
                 entity.HasKey(e => e.Id);
             });
 
-            modelBuilder.Entity<Submit>(entity =>
+            modelBuilder.Entity<Submission>(entity =>
             {
-                //Composite key for Submit
+                //Composite key for Submission
                 entity.HasKey(s => new { s.EventId, s.UserId });
 
-                //Foreign keys for Submit
+                //Foreign keys for Submission
                 entity.HasOne(s => s.Event)
                 .WithMany(e => e.Submissions)
                 .HasForeignKey(s => s.EventId);
@@ -55,11 +55,11 @@ namespace EventManagerBackend
                 .HasForeignKey(s => s.UserId);
 
                 //Json serialization for submissions
-                entity.Property(e => e.Submissions)
+                entity.Property(e => e.Answers)
                 .HasColumnType("nvarchar(max)")
                 .HasConversion(
                     v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
-                    v => JsonSerializer.Deserialize<IList<Submission>>(v!, new JsonSerializerOptions())
+                    v => JsonSerializer.Deserialize<IList<Answer>>(v!, new JsonSerializerOptions())
                 );
             });
                 

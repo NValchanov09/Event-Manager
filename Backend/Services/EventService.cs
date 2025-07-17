@@ -43,7 +43,7 @@ public class EventService : IEventService
 
     public List<EventSummaryDto> GetJoinedEvents(DateTime? fromDate, DateTime? toDate, bool? activeOnly, string userId, bool alphabetical = false, bool sortDescending = false)
     {
-        List<Event> events = _context.Submits
+        List<Event> events = _context.Submissions
             .Include(s => s.Event)
             .ThenInclude(e => e.Submissions)
             .Where(s => s.UserId == userId && s.Event != null)
@@ -270,7 +270,7 @@ public class EventService : IEventService
                         </body>
                     </html>");
             }
-            _context.Submits.RemoveRange(ev.Submissions);
+            _context.Submissions.RemoveRange(ev.Submissions);
         }
 
         EventMapper.UpdateEntity(ev, dto);

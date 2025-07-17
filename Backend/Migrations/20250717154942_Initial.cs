@@ -180,27 +180,27 @@ namespace EventManagerBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Submits",
+                name: "Submissions",
                 columns: table => new
                 {
                     EventId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Submissions = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Answers = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsOnWaitingList = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Submits", x => new { x.EventId, x.UserId });
+                    table.PrimaryKey("PK_Submissions", x => new { x.EventId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_Submits_AspNetUsers_UserId",
+                        name: "FK_Submissions_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Submits_Events_EventId",
+                        name: "FK_Submissions_Events_EventId",
                         column: x => x.EventId,
                         principalTable: "Events",
                         principalColumn: "Id",
@@ -254,8 +254,8 @@ namespace EventManagerBackend.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Submits_UserId",
-                table: "Submits",
+                name: "IX_Submissions_UserId",
+                table: "Submissions",
                 column: "UserId");
         }
 
@@ -278,7 +278,7 @@ namespace EventManagerBackend.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Submits");
+                name: "Submissions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
