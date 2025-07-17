@@ -11,8 +11,7 @@ builder.Services
     .AddAppDbContext(builder.Configuration)
     .AddAppIdentity()
     .AddCorsSupport()
-    .AddAppSwagger()
-	.SetupMailer(builder.Configuration);
+    .AddAppSwagger();
 
 var app = builder.Build();
 

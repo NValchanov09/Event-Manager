@@ -11,8 +11,8 @@ namespace EventManagerBackend
             EventDetailsDto? GetEventById(int eventId, string userId);
             List<EventSummaryDto> GetEvents(DateTime? fromDate, DateTime? toDate, bool? activeOnly, string userId, bool alphabetical = false, bool sortDescending = false);
             List<EventSummaryDto> GetJoinedEvents(DateTime? fromDate, DateTime? toDate, bool? activeOnly, string userId, bool alphabetical = false, bool sortDescending = false);
-            Task<bool> RemoveById(int eventId, IEmailSender _emailSender);
-            Task<bool> Update(int eventId, UpdateEventDto dto, IEmailSender _emailSender);
+            Task<bool> RemoveById(int eventId);
+            Task<bool> Update(int eventId, UpdateEventDto dto);
             bool Exists(int eventId);
     }
 }

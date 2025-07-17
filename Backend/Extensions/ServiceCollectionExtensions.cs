@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using EventManagerBackend.Models;
 using System.Reflection;
-using EventManagerBackend.Interfaces;
 using EventManagerBackend.Seeders;
 
 namespace EventManagerBackend.Extensions
@@ -66,11 +64,6 @@ namespace EventManagerBackend.Extensions
                     Version = "v1",
                     Description = "This API stores and manages data for the  Event Manager application.\n" +
                     "\n IMPORTANT!!! : To authenticate use \"Bearer {your_access_token}\" (without the quotes and the curly brackets).",
-                    Contact = new OpenApiContact
-                    {
-                        Name = "Mihail Tenev",
-                        Email = "mtenev@outlook.com",
-                    }
                 });
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -106,15 +99,6 @@ namespace EventManagerBackend.Extensions
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
-            return services;
-        }
-        public static IServiceCollection SetupMailer(this IServiceCollection services, IConfiguration configuration)
-        {
-            var gmailUser = configuration["EmailSettings:GmailUser"];
-            var gmailPass = configuration["EmailSettings:GmailPass"];
-
-            services.AddTransient<IEmailSender>(_ => new GmailEmailSender(gmailUser, gmailPass));
-
             return services;
         }
 	}

@@ -67,7 +67,7 @@ public class SubmissionService : ISubmissionService
 
 
     // Admin removes user from an Event
-    public async Task<bool> AdminRemoveUserFromEvent(int eventId, string userId, IEmailSender _emailSender)
+    public async Task<bool> AdminRemoveUserFromEvent(int eventId, string userId)
     {
         // Fetch submission with related user and event data
         var submission = await _context.Submissions
@@ -78,41 +78,14 @@ public class SubmissionService : ISubmissionService
         if (submission?.User == null || submission.Event == null)
             return false;
 
-        // Prepare email details
-        var userEmail = submission.User.Email;
-        var userName = userEmail.Contains('@')
-            ? userEmail[..userEmail.IndexOf('@')]
-            : "User";
-
-        var eventName = submission.Event.Name;
-        var eventDate = submission.Event.Date?.ToString("MMMM d, yyyy") ?? "бъдеща дата";
-
         // Remove the submission
         _context.Submissions.Remove(submission);
         var success = await _context.SaveChangesAsync() > 0;
 
-        // Send email only if removal succeeded
-        if (success)
-        {
-            await _emailSender.SendEmailAsync(
-            email: userEmail,
-            subject: $"Премахнат от събитието: {eventName}",
-            htmlMessage: $@"
-                <html>
-                    <body>
-                        <p>Уважаеми/а {userName},</p>
-                        <p>Администратор ви е премахнал от събитието <strong>{eventName}</strong>, насрочено за {eventDate}.</p>
-                        <p>Ако имате въпроси, моля свържете се с администратор.</p>                           
-                    </body>
-                </html>"
-);
-
-        }
-
         return success;
     }
     //User removes himself from the event
-    public async Task<IResult> RemoveUserFromEvent(int eventId, string userId, IEmailSender _emailSender)
+    public async Task<IResult> RemoveUserFromEvent(int eventId, string userId)
     {
         // Fetch submission with related user and event data
         var submission = await _context.Submissions
@@ -129,39 +102,11 @@ public class SubmissionService : ISubmissionService
         if (_context.Events.Find(eventId).SignUpDeadline < DateTime.UtcNow)
             return Results.BadRequest(new { error = "Срокът за отписване е изтекъл!" });
 
-        // Prepare email details
-        var userEmail = submission.User.Email;
-        var userName = userEmail.Contains('@')
-            ? userEmail[..userEmail.IndexOf('@')]
-            : "User";
-
-        var eventName = submission.Event.Name;
-        var eventDate = submission.Event.Date?.ToString("MMMM d, yyyy") ?? "бъдеща дата";
-
         // Remove the submission
         _context.Submissions.Remove(submission);
         var success = await _context.SaveChangesAsync() > 0;
 
-        // Send email only if removal succeeded
-        if (success)
-        {
-            await _emailSender.SendEmailAsync(
-                email: userEmail,
-                subject: $"Премахнат от събитието: {eventName}",
-                htmlMessage: $@"
-                    <html>
-                        <body>
-                            <p>Уважаеми/а {userName},</p>
-                            <p>Вие успешно се отписахте от събитието <strong>{eventName}</strong>, насрочено за {eventDate}.</p>
-                            <p>Ако това е било грешка, можете да се запишете отново по всяко време преди крайния срок за регистрация.</p>
-                        </body>
-                    </html>"
-            );
-        }
-
         return success ? Results.Ok() : Results.InternalServerError();
     }
-
-
 }
 

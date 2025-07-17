@@ -191,7 +191,7 @@ public class EventService : IEventService
         return (firstChar >= 'A' && firstChar <= 'Z') || (firstChar >= 'a' && firstChar <= 'z');
     }
 
-    public async Task<bool> RemoveById(int eventId, IEmailSender emailSender)
+    public async Task<bool> RemoveById(int eventId)
     {
         var ev = await _context.Events
             .Include(e => e.Submissions)
@@ -201,40 +201,12 @@ public class EventService : IEventService
         if (ev == null)
             return false;
 
-        var validUsers = ev.Submissions?
-            .Where(s => !string.IsNullOrWhiteSpace(s.User?.Email))
-            .Select(s => s.User!)
-            .Distinct(); // In case multiple submissions from same user
-
-        if (validUsers != null)
-        {
-            foreach (var user in validUsers)
-            {
-                var email = user.Email!;
-                var userName = email.Split('@')[0];
-
-                await emailSender.SendEmailAsync(
-                    email,
-                    $"Отменено събитие: {ev.Name}",
-                    $@"
-                    <html>
-                        <body>
-                            <p>Здравейте, {userName},</p>
-                            <p>Съжаляваме да Ви уведомим, че събитието <strong>{ev.Name}</strong>, планирано за {ev.Date:dd.MM.yyyy}, беше отменено.</p>
-                            <p>Поради това Вашата регистрация за събитието беше <strong>изтрита</strong>.</p>
-                            <p>Ако имате въпроси, моля свържете се с администратор.</p>
-                            <p>С уважение,<br>Екипът по управление на събития</p>
-                        </body>
-                    </html>");
-            }
-        }
-
         _context.Events.Remove(ev);
         return await _context.SaveChangesAsync() > 0;
     }
 
 
-    public async Task<bool> Update(int eventId, UpdateEventDto dto, IEmailSender emailSender)
+    public async Task<bool> Update(int eventId, UpdateEventDto dto)
     {
         var ev = await _context.Events
             .Include(e => e.Submissions)
@@ -251,6 +223,7 @@ public class EventService : IEventService
 
         if (validUsers != null)
         {
+<<<<<<< Updated upstream
             foreach (var user in validUsers)
             {
                 var email = user.Email!;
@@ -271,6 +244,9 @@ public class EventService : IEventService
                     </html>");
             }
             _context.Submissions.RemoveRange(ev.Submissions);
+=======
+            _context.Submits.RemoveRange(ev.Submissions);
+>>>>>>> Stashed changes
         }
 
         EventMapper.UpdateEntity(ev, dto);

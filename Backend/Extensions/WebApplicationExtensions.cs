@@ -153,9 +153,9 @@ namespace EventManagerBackend.Extensions
 
             app.MapPut("/events/{id}",
             [Authorize(Roles = "Administrator")]
-            async (IEventService service, int id, UpdateEventDto dto, IEmailSender emailSender) =>
+            async (IEventService service, int id, UpdateEventDto dto) =>
             {
-                var success = await service.Update(id, dto, emailSender);
+                var success = await service.Update(id, dto);
                 return success ? Results.Ok() : Results.BadRequest();
             })
             .WithSummary("Update event by ID")
@@ -164,9 +164,9 @@ namespace EventManagerBackend.Extensions
             // Delete event by ID
             app.MapDelete("/events/{id}",
             [Authorize(Roles = "Administrator")]
-            async (IEventService service, int id, IEmailSender emailSender) =>
+            async (IEventService service, int id) =>
             {
-                var success = await service.RemoveById(id, emailSender);
+                var success = await service.RemoveById(id);
                 return success ? Results.Ok() : Results.BadRequest();
             });
 
@@ -232,13 +232,15 @@ namespace EventManagerBackend.Extensions
             //Removes a submission user from an event
            app.MapDelete("/submissions/{eventId}",
            [Authorize]
+<<<<<<< Updated upstream
            async (int eventId, ISubmissionService service, ClaimsPrincipal user, IEmailSender emailSender) =>
+=======
+           async (int eventId, ISubmitService service, ClaimsPrincipal user) =>
+>>>>>>> Stashed changes
            {
                var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-               if (string.IsNullOrEmpty(userId))
-                   return Results.Unauthorized();
 
-               var success = await service.RemoveUserFromEvent(eventId, userId, emailSender);
+               var success = await service.RemoveUserFromEvent(eventId, userId);
                return success;
             })
             .WithSummary("Removes authenticated user from event")
@@ -248,9 +250,16 @@ namespace EventManagerBackend.Extensions
             //Admin delete
             app.MapDelete("/submissions/{eventId}/{userId}",
             [Authorize(Roles = "Administrator")]
+<<<<<<< Updated upstream
             async (int eventId, string userId, ISubmissionService service, ClaimsPrincipal user, IEmailSender emailSender) =>
             {
                 var success = await service.AdminRemoveUserFromEvent(eventId, userId, emailSender);
+=======
+            async (int eventId, string userId, ISubmitService service, ClaimsPrincipal user) =>
+            {
+
+                var success = await service.AdminRemoveUserFromEvent(eventId, userId);
+>>>>>>> Stashed changes
                 return success ? Results.Ok() : Results.NotFound();
             })
             .WithSummary("Remove user submission from event by admin")
