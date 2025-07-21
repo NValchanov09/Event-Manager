@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Identity;
 using EventManagerBackend;
 using EventManagerBackend.Extensions;
 using EventManagerBackend.Models;
-using EventManagerBackend.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +20,12 @@ if (app.Environment.IsDevelopment())
 {
     //Swagger in DEV
     app.ConfigureSwagger();
-    await app.ConfigureDemoSeederAsync();
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var submissionService = scope.ServiceProvider.GetRequiredService<ISubmissionService>();
+        await app.ConfigureDemoSeederAsync(submissionService);
+    }
 }
 
 await app.ConfigureSeederAsync();

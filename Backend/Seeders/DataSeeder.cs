@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using EventManagerBackend.Models;
 using EventManagerBackend.Models.JSON;
+using EventManagerBackend.Models.DTOs;
 
 namespace EventManagerBackend.Seeders
 {
@@ -275,7 +276,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 9, 15, 9, 0, 0),
                     SignUpDeadline = new DateTime(2025, 8, 31),
                     Location = "София, Зала 2 - Бизнес Център",
-                    PeopleLimit = 25,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -310,7 +311,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 10, 12, 10, 0, 0),
                     SignUpDeadline = new DateTime(2025, 10, 1),
                     Location = "София Тех Парк",
-                    PeopleLimit = 30,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -348,7 +349,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 5, 25, 10, 0, 0),
                     SignUpDeadline = new DateTime(2025, 5, 10),
                     Location = "Сапарева баня",
-                    PeopleLimit = 30,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -378,7 +379,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 4, 10, 14, 0, 0),
                     SignUpDeadline = new DateTime(2025, 3, 31),
                     Location = "Онлайн",
-                    PeopleLimit = 20,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -449,7 +450,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 10, 3, 13, 0, 0),
                     SignUpDeadline = new DateTime(2025, 9, 25),
                     Location = "Пловдив, Конферентен център",
-                    PeopleLimit = 25,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -476,7 +477,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 9, 10, 10, 0, 0),
                     SignUpDeadline = new DateTime(2025, 8, 31),
                     Location = "София, парк Борисова градина",
-                    PeopleLimit = 40,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -504,7 +505,7 @@ namespace EventManagerBackend.Seeders
             await _context.SaveChangesAsync();
         }
 
-        public async Task SeedSubmissions()
+        public async Task SeedSubmissions(ISubmissionService service)
         {
             if (_context.Submissions.Any())
                 return;
@@ -549,21 +550,13 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submission = new Submission
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 1,
-                        IsOnWaitingList = evn.PeopleLimit == null ? false : evn.PeopleLimit <= submissions.Count(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
                         Answers = answers
                     };
 
-                    submissions.Add(submission);
+                    service.Create(1, user.Id, submissionDto);
                 }
-
-                await _context.Submissions.AddRangeAsync(submissions);
-                await _context.SaveChangesAsync();
             }
 
             if (!_context.Submissions.Any(s => s.EventId == 2))
@@ -599,21 +592,13 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submission = new Submission
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 2,
-                        IsOnWaitingList = evn.PeopleLimit == null ? false : evn.PeopleLimit <= submissions.Count(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
                         Answers = answers
                     };
 
-                    submissions.Add(submission);
+                    service.Create(2, user.Id, submissionDto);
                 }
-
-                await _context.Submissions.AddRangeAsync(submissions);
-                await _context.SaveChangesAsync();
             }
 
             if (!_context.Submissions.Any(s => s.EventId == 3))
@@ -671,21 +656,13 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submission = new Submission
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 3,
-                        IsOnWaitingList = evn.PeopleLimit == null ? false : evn.PeopleLimit <= submissions.Count(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
                         Answers = answers
                     };
 
-                    submissions.Add(submission);
+                    service.Create(3, user.Id, submissionDto);
                 }
-
-                await _context.Submissions.AddRangeAsync(submissions);
-                await _context.SaveChangesAsync();
             }
 
             if (!_context.Submissions.Any(s => s.EventId == 4))
@@ -727,21 +704,13 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submission = new Submission
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 4,
-                        IsOnWaitingList = evn.PeopleLimit == null ? false : evn.PeopleLimit <= submissions.Count(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
                         Answers = answers
                     };
 
-                    submissions.Add(submission);
+                    service.Create(4, user.Id, submissionDto);
                 }
-
-                await _context.Submissions.AddRangeAsync(submissions);
-                await _context.SaveChangesAsync();
             }
 
             if (!_context.Submissions.Any(s => s.EventId == 5))
@@ -777,21 +746,13 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submission = new Submission
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 5,
-                        IsOnWaitingList = evn.PeopleLimit == null ? false : evn.PeopleLimit <= submissions.Count(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
                         Answers = answers
                     };
 
-                    submissions.Add(submission);
+                    service.Create(5, user.Id, submissionDto);
                 }
-
-                await _context.Submissions.AddRangeAsync(submissions);
-                await _context.SaveChangesAsync();
             }
 
             if (!_context.Submissions.Any(s => s.EventId == 6))
@@ -820,21 +781,13 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submission = new Submission
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 6,
-                        IsOnWaitingList = evn.PeopleLimit == null ? false : evn.PeopleLimit <= submissions.Count(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
                         Answers = answers
                     };
 
-                    submissions.Add(submission);
+                    service.Create(6, user.Id, submissionDto);
                 }
-
-                await _context.Submissions.AddRangeAsync(submissions);
-                await _context.SaveChangesAsync();
             }
 
             if (!_context.Submissions.Any(s => s.EventId == 7))
@@ -870,21 +823,13 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submission = new Submission
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 7,
-                        IsOnWaitingList = evn.PeopleLimit == null ? false : evn.PeopleLimit <= submissions.Count(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
                         Answers = answers
                     };
 
-                    submissions.Add(submission);
+                    service.Create(7, user.Id, submissionDto);
                 }
-
-                await _context.Submissions.AddRangeAsync(submissions);
-                await _context.SaveChangesAsync();
             }
 
             if (!_context.Submissions.Any(s => s.EventId == 8))
@@ -912,21 +857,13 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submission = new Submission
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 8,
-                        IsOnWaitingList = evn.PeopleLimit == null ? false : evn.PeopleLimit <= submissions.Count(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
                         Answers = answers
                     };
 
-                    submissions.Add(submission);
+                    service.Create(8, user.Id, submissionDto);
                 }
-
-                await _context.Submissions.AddRangeAsync(submissions);
-                await _context.SaveChangesAsync();
             }
 
             if (!_context.Submissions.Any(s => s.EventId == 9))
@@ -961,29 +898,21 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submission = new Submission
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 9,
-                        IsOnWaitingList = evn.PeopleLimit == null ? false : evn.PeopleLimit <= submissions.Count(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
                         Answers = answers
                     };
 
-                    submissions.Add(submission);
+                    service.Create(9, user.Id, submissionDto);
                 }
-
-                await _context.Submissions.AddRangeAsync(submissions);
-                await _context.SaveChangesAsync();
             }
         }
 
-        public async Task SeedAsync()
+        public async Task SeedAsync(ISubmissionService submissionService)
         {
             await SeedUsers();
             await SeedEvents();
-            await SeedSubmissions();
+            await SeedSubmissions(submissionService);
         }
     }
 }
