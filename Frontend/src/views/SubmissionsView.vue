@@ -112,14 +112,20 @@ watch(eventError, () => {
 					<th
 						scope="col"
 						class="px-6 py-3 text-left text-xs font-medium text-yellow uppercase tracking-wider"
+						data-tooltip="User Email">
+						Имейл на потребителя
+					</th>
+					<th
+						scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-yellow uppercase tracking-wider"
 						data-tooltip="Submission Date">
 						Дата на подаване
 					</th>
 					<th
 						scope="col"
 						class="px-6 py-3 text-left text-xs font-medium text-yellow uppercase tracking-wider"
-						data-tooltip="User Email">
-						Имейл на потребителя
+						data-tooltip="Waiting List">
+						В списъка за чакащи
 					</th>
 					<th
 						v-for="field in eventData.fields"
@@ -140,6 +146,13 @@ watch(eventError, () => {
 					class="transition-colors">
 					<td
 						class="px-6 py-4 whitespace-nowrap text-white"
+						:data-tooltip="submission.email">
+						<div class="truncate max-w-[200px]">
+							{{ submission.email }}
+						</div>
+					</td>
+					<td
+						class="px-6 py-4 whitespace-nowrap text-white"
 						:data-tooltip="formatDateTime(submission.createdAt)">
 						<div class="truncate max-w-[200px]">
 							{{ formatDateTime(submission.createdAt) }}
@@ -147,9 +160,14 @@ watch(eventError, () => {
 					</td>
 					<td
 						class="px-6 py-4 whitespace-nowrap text-white"
-						:data-tooltip="submission.email">
-						<div class="truncate max-w-[200px]">
-							{{ submission.email }}
+						:data-tooltip="submission.isOnWaitingList">
+						<div v-if="submission.isOnWaitingList == true" 
+						class="truncate max-w-[200px]">
+							Да
+						</div>
+						<div v-else
+						class="truncate max-w-[200px]">
+							Не
 						</div>
 					</td>
 					<td
