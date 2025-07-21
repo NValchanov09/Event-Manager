@@ -100,7 +100,7 @@ router.beforeEach(async (to, from, next) => {
 	// Handle token refresh
 	if (userStore.refreshToken && !userStore.accessToken) {
 		try {
-			const success = await userStore.refreshAccessToken();
+			const success = await userStore.refreshTokens();
 
 			if (!success) {
 				triggerToast(

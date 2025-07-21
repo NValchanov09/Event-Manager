@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using EventManagerBackend.Models;
 using EventManagerBackend.Models.JSON;
+using EventManagerBackend.Models.DTOs;
 
 namespace EventManagerBackend.Seeders
 {
@@ -275,7 +276,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 9, 15, 9, 0, 0),
                     SignUpDeadline = new DateTime(2025, 8, 31),
                     Location = "София, Зала 2 - Бизнес Център",
-                    PeopleLimit = 25,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -310,7 +311,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 10, 12, 10, 0, 0),
                     SignUpDeadline = new DateTime(2025, 10, 1),
                     Location = "София Тех Парк",
-                    PeopleLimit = 30,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -348,7 +349,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 5, 25, 10, 0, 0),
                     SignUpDeadline = new DateTime(2025, 5, 10),
                     Location = "Сапарева баня",
-                    PeopleLimit = 30,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -378,7 +379,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 4, 10, 14, 0, 0),
                     SignUpDeadline = new DateTime(2025, 3, 31),
                     Location = "Онлайн",
-                    PeopleLimit = 20,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -449,7 +450,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 10, 3, 13, 0, 0),
                     SignUpDeadline = new DateTime(2025, 9, 25),
                     Location = "Пловдив, Конферентен център",
-                    PeopleLimit = 25,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -476,7 +477,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 9, 10, 10, 0, 0),
                     SignUpDeadline = new DateTime(2025, 8, 31),
                     Location = "София, парк Борисова градина",
-                    PeopleLimit = 40,
+                    PeopleLimit = 10,
                     Fields = new List<Field>
                 {
                     new Field
@@ -504,42 +505,44 @@ namespace EventManagerBackend.Seeders
             await _context.SaveChangesAsync();
         }
 
-        public async Task SeedSubmits()
+        public async Task SeedSubmissions(ISubmissionService service)
         {
-            if (_context.Submits.Any())
+            if (_context.Submissions.Any())
                 return;
 
             var rnd = new Random();
 
-            if (!_context.Submits.Any(s => s.EventId == 1))
+            if (!_context.Submissions.Any(s => s.EventId == 1))
             {
                 var users = _context.Users
                     .OrderBy(_ => Guid.NewGuid())
                     .Take(rnd.Next(_context.Users.Count()))
                     .ToList();
 
+                var evn = _context.Events.Find(1);
+
                 var departments = new[] { "ИТ отдел", "Маркетинг", "Финанси", "Продажби", "Човешки ресурси" };
                 var yesNo = new[] { "Да", "Не" };
 
-                var submits = new List<Submit>();
+                var submissions = new List<Submission>();
 
                 foreach (var user in users)
                 {
-                    var submissions = new List<Submission>
+                    var answers = new List<Answer>
                         {
-                            new Submission
+                            new Answer
                             {
                                 Id = 1,
                                 Name = "Отдел",
                                 Options = new List<string> { departments[rnd.Next(departments.Length)] }
                             },
-                            new Submission
+                            new Answer
                             {
                                 Id = 2,
                                 Name = "Желаете ли транспорт от София?",
                                 Options = new List<string> { yesNo[rnd.Next(yesNo.Length)] }
                             },
-                            new Submission
+                            new Answer
                             {
                                 Id = 3,
                                 Name = "Ще участвате ли в игрите?",
@@ -547,24 +550,16 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submit = new Submit
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 1,
-                        Date = DateTime.UtcNow,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        Submissions = submissions
+                        Answers = answers
                     };
 
-                    submits.Add(submit);
+                    service.Create(1, user.Id, submissionDto);
                 }
-
-                await _context.Submits.AddRangeAsync(submits);
-                await _context.SaveChangesAsync();
             }
 
-            if (!_context.Submits.Any(s => s.EventId == 2))
+            if (!_context.Submissions.Any(s => s.EventId == 2))
             {
                 var users = _context.Users
                     .OrderBy(_ => Guid.NewGuid())
@@ -572,22 +567,24 @@ namespace EventManagerBackend.Seeders
                     .Take(rnd.Next(_context.Users.Count()))
                     .ToList();
 
+                var evn = _context.Events.Find(2);
+
                 var skill = new[] { "Начинаещ", "Средно ниво", "Напреднал" };
                 var yesNo = new[] { "Да", "Не" };
 
-                var submits = new List<Submit>();
+                var submissions = new List<Submission>();
 
                 foreach (var user in users)
                 {
-                    var submissions = new List<Submission>
+                    var answers = new List<Answer>
                         {
-                            new Submission
+                            new Answer
                             {
                                 Id = 1,
                                 Name = "Ниво на познания в киберсигурността",
                                 Options = new List<string> { skill[rnd.Next(skill.Length)] }
                             },
-                            new Submission
+                            new Answer
                             {
                                 Id = 2,
                                 Name = "Желаете ли да получите сертификат?",
@@ -595,30 +592,24 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submit = new Submit
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 2,
-                        Date = DateTime.UtcNow,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        Submissions = submissions
+                        Answers = answers
                     };
 
-                    submits.Add(submit);
+                    service.Create(2, user.Id, submissionDto);
                 }
-
-                await _context.Submits.AddRangeAsync(submits);
-                await _context.SaveChangesAsync();
             }
 
-            if (!_context.Submits.Any(s => s.EventId == 3))
+            if (!_context.Submissions.Any(s => s.EventId == 3))
             {
                 var users = _context.Users
                     .OrderBy(_ => Guid.NewGuid())
                     .Reverse()
                     .Take(rnd.Next(_context.Users.Count()))
                     .ToList();
+
+                var evn = _context.Events.Find(3);
 
                 var technologies = new[]
                 {
@@ -636,26 +627,26 @@ namespace EventManagerBackend.Seeders
 
                 var yesNo = new[] { "Да", "Не" };
 
-                var submits = new List<Submit>();
+                var submissions = new List<Submission>();
 
                 foreach (var user in users)
                 {
                     var hasTeam = yesNo[rnd.Next(2)];
-                    var submissions = new List<Submission>
+                    var answers = new List<Answer>
                         {
-                            new Submission
+                            new Answer
                             {
                                 Id = 1,
                                 Name = "Технологии, с които ще работите",
                                 Options = new List<string> { technologies[rnd.Next(technologies.Length)] }
                             },
-                            new Submission
+                            new Answer
                             {
                                 Id = 2,
                                 Name = "Имате ли екип?",
                                 Options = new List<string> { hasTeam }
                             },
-                            new Submission
+                            new Answer
                             {
                                 Id = 3,
                                 Name = "Име на екипа (ако имате)",
@@ -665,30 +656,24 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submit = new Submit
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 3,
-                        Date = DateTime.UtcNow,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        Submissions = submissions
+                        Answers = answers
                     };
 
-                    submits.Add(submit);
+                    service.Create(3, user.Id, submissionDto);
                 }
-
-                await _context.Submits.AddRangeAsync(submits);
-                await _context.SaveChangesAsync();
             }
 
-            if (!_context.Submits.Any(s => s.EventId == 4))
+            if (!_context.Submissions.Any(s => s.EventId == 4))
             {
                 var users = _context.Users
                     .OrderBy(_ => Guid.NewGuid())
                     .Reverse()
                     .Take(rnd.Next(_context.Users.Count()))
                     .ToList();
+
+                var evn = _context.Events.Find(4);
 
                 var accommodationPrefs = new[]
                 {
@@ -699,19 +684,19 @@ namespace EventManagerBackend.Seeders
 
                 var yesNo = new[] { "Да", "Не" };
 
-                var submits = new List<Submit>();
+                var submissions = new List<Submission>();
 
                 foreach (var user in users)
                 {
-                    var submissions = new List<Submission>
+                    var answers = new List<Answer>
                         {
-                            new Submission
+                            new Answer
                             {
                                 Id = 1,
                                 Name = "Нужда от транспорт",
                                 Options = new List<string> { yesNo[rnd.Next(2)] }
                             },
-                            new Submission
+                            new Answer
                             {
                                 Id = 2,
                                 Name = "Предпочитание за настаняване",
@@ -719,30 +704,24 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submit = new Submit
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 4,
-                        Date = DateTime.UtcNow,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        Submissions = submissions
+                        Answers = answers
                     };
 
-                    submits.Add(submit);
+                    service.Create(4, user.Id, submissionDto);
                 }
-
-                await _context.Submits.AddRangeAsync(submits);
-                await _context.SaveChangesAsync();
             }
 
-            if (!_context.Submits.Any(s => s.EventId == 5))
+            if (!_context.Submissions.Any(s => s.EventId == 5))
             {
                 var users = _context.Users
                     .OrderBy(_ => Guid.NewGuid())
                     .Reverse()
                     .Take(rnd.Next(_context.Users.Count()))
                     .ToList();
+
+                var evn = _context.Events.Find(5);
 
                 var accommodationPrefs = new[]
                 {
@@ -753,13 +732,13 @@ namespace EventManagerBackend.Seeders
 
                 var experienceLevels = new[] { "Начинаещ", "Средно ниво", "Напреднал" };
 
-                var submits = new List<Submit>();
+                var submissions = new List<Submission>();
 
                 foreach (var user in users)
                 {
-                    var submissions = new List<Submission>
+                    var answers = new List<Answer>
                         {
-                            new Submission
+                            new Answer
                             {
                                 Id = 1,
                                 Name = "Ниво на опит",
@@ -767,24 +746,16 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submit = new Submit
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 5,
-                        Date = DateTime.UtcNow,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        Submissions = submissions
+                        Answers = answers
                     };
 
-                    submits.Add(submit);
+                    service.Create(5, user.Id, submissionDto);
                 }
-
-                await _context.Submits.AddRangeAsync(submits);
-                await _context.SaveChangesAsync();
             }
 
-            if (!_context.Submits.Any(s => s.EventId == 6))
+            if (!_context.Submissions.Any(s => s.EventId == 6))
             {
                 var users = _context.Users
                     .OrderBy(_ => Guid.NewGuid())
@@ -792,15 +763,17 @@ namespace EventManagerBackend.Seeders
                     .Take(rnd.Next(_context.Users.Count()))
                     .ToList();
 
+                var evn = _context.Events.Find(6);
+
                 var yesNo = new[] { "Да", "Не" };
 
-                var submits = new List<Submit>();
+                var submissions = new List<Submission>();
 
                 foreach (var user in users)
                 {
-                    var submissions = new List<Submission>
+                    var answers = new List<Answer>
                         {
-                            new Submission
+                            new Answer
                             {
                                 Id = 1,
                                 Name = "Имате ли собствен лаптоп?",
@@ -808,29 +781,23 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submit = new Submit
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 6,
-                        Date = DateTime.UtcNow,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        Submissions = submissions
+                        Answers = answers
                     };
 
-                    submits.Add(submit);
+                    service.Create(6, user.Id, submissionDto);
                 }
-
-                await _context.Submits.AddRangeAsync(submits);
-                await _context.SaveChangesAsync();
             }
 
-            if (!_context.Submits.Any(s => s.EventId == 7))
+            if (!_context.Submissions.Any(s => s.EventId == 7))
             {
                 var users = _context.Users
                     .OrderBy(_ => Guid.NewGuid())
                     .Take(rnd.Next(_context.Users.Count()))
                     .ToList();
+
+                var evn = _context.Events.Find(7);
 
                 var experienceOptions = new[]
                 {
@@ -842,13 +809,13 @@ namespace EventManagerBackend.Seeders
                         "Трудно ми е да намирам определени функции"
                     };
 
-                var submits = new List<Submit>();
+                var submissions = new List<Submission>();
 
                 foreach (var user in users)
                 {
-                    var submissions = new List<Submission>
+                    var answers = new List<Answer>
                         {
-                            new Submission
+                            new Answer
                             {
                                 Id = 1,
                                 Name = "Какъв е вашият опит със софтуера?",
@@ -856,39 +823,33 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submit = new Submit
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 7,
-                        Date = DateTime.UtcNow,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        Submissions = submissions
+                        Answers = answers
                     };
 
-                    submits.Add(submit);
+                    service.Create(7, user.Id, submissionDto);
                 }
-
-                await _context.Submits.AddRangeAsync(submits);
-                await _context.SaveChangesAsync();
             }
 
-            if (!_context.Submits.Any(s => s.EventId == 8))
+            if (!_context.Submissions.Any(s => s.EventId == 8))
             {
                 var users = _context.Users
                     .OrderBy(_ => Guid.NewGuid())
                     .Take(rnd.Next(_context.Users.Count()))
                     .ToList();
 
+                var evn = _context.Events.Find(8);
+
                 var topics = new[] { "AI", "Cloud", "DevOps" };
 
-                var submits = new List<Submit>();
+                var submissions = new List<Submission>();
 
                 foreach (var user in users)
                 {
-                    var submissions = new List<Submission>
+                    var answers = new List<Answer>
                         {
-                            new Submission
+                            new Answer
                             {
                                 Id = 1,
                                 Name = "Интересуваща тема",
@@ -896,24 +857,16 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submit = new Submit
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 8,
-                        Date = DateTime.UtcNow,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        Submissions = submissions
+                        Answers = answers
                     };
 
-                    submits.Add(submit);
+                    service.Create(8, user.Id, submissionDto);
                 }
-
-                await _context.Submits.AddRangeAsync(submits);
-                await _context.SaveChangesAsync();
             }
 
-            if (!_context.Submits.Any(s => s.EventId == 9))
+            if (!_context.Submissions.Any(s => s.EventId == 9))
             {
                 var users = _context.Users
                     .OrderBy(_ => Guid.NewGuid())
@@ -921,21 +874,23 @@ namespace EventManagerBackend.Seeders
                     .Take(rnd.Next(_context.Users.Count()))
                     .ToList();
 
+                var evn = _context.Events.Find(9);
+
                 var yesNo = new[] { "Да", "Не" };
 
-                var submits = new List<Submit>();
+                var submissions = new List<Submission>();
 
                 foreach (var user in users)
                 {
-                    var submissions = new List<Submission>
+                    var answers = new List<Answer>
                         {
-                            new Submission
+                            new Answer
                             {
                             Id = 1,
                             Name = "Желаете ли да участвате в йога?",
                             Options = new List<string> { rnd.Next(2) == 0 ? "Да" : "Не" }
                             },
-                            new Submission
+                            new Answer
                             {
                                 Id = 2,
                                 Name = "Имате ли хранителни ограничения?",
@@ -943,29 +898,21 @@ namespace EventManagerBackend.Seeders
                             }
                         };
 
-                    var submit = new Submit
+                    var submissionDto = new CreateSubmissionDto
                     {
-                        UserId = user.Id,
-                        EventId = 9,
-                        Date = DateTime.UtcNow,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        Submissions = submissions
+                        Answers = answers
                     };
 
-                    submits.Add(submit);
+                    service.Create(9, user.Id, submissionDto);
                 }
-
-                await _context.Submits.AddRangeAsync(submits);
-                await _context.SaveChangesAsync();
             }
         }
 
-        public async Task SeedAsync()
+        public async Task SeedAsync(ISubmissionService submissionService)
         {
             await SeedUsers();
             await SeedEvents();
-            await SeedSubmits();
+            await SeedSubmissions(submissionService);
         }
     }
 }

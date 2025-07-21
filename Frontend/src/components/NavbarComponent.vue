@@ -82,20 +82,20 @@ const logout = async () => {
 				<RouterLink
 					v-if="userStore.isAuthenticated && userStore.isAdmin"
 					to="/events/create"
-					class="bg-yellow text-dark-grey px-3 xl:px-4 py-2 rounded-md hover:opacity-90 transition-colors font-medium whitespace-nowrap"
+					class="bg-yellow-500 text-dark-grey px-3 xl:px-4 py-2 rounded-md hover:opacity-90 transition-colors font-medium whitespace-nowrap"
 					active-class="bg-yellow opacity-90 shadow-md">
 					Създай събитие
 				</RouterLink>
 				<button
 					v-if="userStore.isAuthenticated"
 					@click="logout"
-					class="bg-yellow text-dark-grey px-3 xl:px-4 py-2 rounded-md hover:opacity-90 transition-colors font-medium cursor-pointer whitespace-nowrap">
+					class="bg-yellow-600 text-dark-grey px-3 xl:px-4 py-2 rounded-md hover:opacity-90 transition-colors font-medium cursor-pointer whitespace-nowrap">
 					Излизане
 				</button>
 				<RouterLink
 					v-else
 					to="/login"
-					class="bg-yellow text-dark-grey px-3 xl:px-4 py-2 rounded-md hover:opacity-90 transition-colors font-medium whitespace-nowrap">
+					class="bg-yellow-600 text-dark-grey px-3 xl:px-4 py-2 rounded-md hover:opacity-90 transition-colors font-medium whitespace-nowrap">
 					Вписване
 				</RouterLink>
 			</div>

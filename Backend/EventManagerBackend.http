@@ -23,6 +23,6 @@ GET {{EventManagerBackend_HostAddress}}/events
 GET {{EventManagerBackend_HostAddress}}/events/{{id}}
 
 @eventId=0
-GET {{EventManagerBackend_HostAddress}}/submits/{{eventId}}
+GET {{EventManagerBackend_HostAddress}}/submissions/{{eventId}}
 
 ###

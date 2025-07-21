@@ -65,7 +65,7 @@ namespace EventManagerBackend.Models.DTOs
                 SignUpDeadline = ev.SignUpDeadline,
                 Location = ev.Location,
                 PeopleLimit = ev.PeopleLimit,
-                SpotsLeft = ev.PeopleLimit - ev.Submissions!.Count(),
+                SpotsLeft = ev.PeopleLimit - ev.Submissions!.Count(s => s.IsOnWaitingList == false),
                 UserSignedUp = ev.Submissions!.Where(s => s.UserId == userId).Any(),
                 CreatedAt = ev.CreatedAt,
                 UpdatedAt = ev.UpdatedAt
@@ -83,7 +83,7 @@ namespace EventManagerBackend.Models.DTOs
                 SignUpDeadline = ev.SignUpDeadline,
                 Location = ev.Location,
                 PeopleLimit = ev.PeopleLimit,
-                SpotsLeft = ev.PeopleLimit - ev.Submissions!.Count(),
+                SpotsLeft = ev.PeopleLimit - ev.Submissions!.Count(s => s.IsOnWaitingList == false),
                 UserSignedUp = ev.Submissions!.Where(s => s.UserId == userId).Any(),
                 Fields = ev.Fields,
                 CreatedAt = ev.CreatedAt,

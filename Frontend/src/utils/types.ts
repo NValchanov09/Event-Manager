@@ -29,17 +29,18 @@ export interface CreateEventDto {
 	peopleLimit?: number;
 }
 
-export interface FilledField {
+export interface Answer {
 	id: number;
 	name: string;
 	options: string[];
 }
 
 export interface GetSubmissionDto {
-	submissions: FilledField[];
-	date: string;
+	answers: Answer[];
+	createdAt: string;
 	email: string;
 	userId: string;
+	isOnWaitingList: boolean;
 }
 
 export interface CreateEventResponse {

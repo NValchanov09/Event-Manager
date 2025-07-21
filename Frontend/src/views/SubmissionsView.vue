@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import type { CreateEventDto, FilledField } from "@/utils/types.ts";
+import type { CreateEventDto, Answer } from "@/utils/types.ts";
 import { useRoute } from "vue-router";
 import { apiClient } from "@/utils/api.ts";
 import { downloadFile } from "@/services/exportsService.ts";
@@ -13,7 +13,7 @@ import { extractErrorMessage } from "@/utils/errorHandling";
 
 const uiStore = useUIStore();
 const getSubmissionField = (
-	submission: FilledField[],
+	submission: Answer[],
 	fieldId: number
 ): string => {
 	return submission.find(s => s.id === fieldId)?.options.join(", ") || "-";
@@ -112,14 +112,20 @@ watch(eventError, () => {
 					<th
 						scope="col"
 						class="px-6 py-3 text-left text-xs font-medium text-yellow uppercase tracking-wider"
+						data-tooltip="User Email">
+						Имейл на потребителя
+					</th>
+					<th
+						scope="col"
+						class="px-6 py-3 text-left text-xs font-medium text-yellow uppercase tracking-wider"
 						data-tooltip="Submission Date">
 						Дата на подаване
 					</th>
 					<th
 						scope="col"
 						class="px-6 py-3 text-left text-xs font-medium text-yellow uppercase tracking-wider"
-						data-tooltip="User Email">
-						Имейл на потребителя
+						data-tooltip="Waiting List">
+						В списъка за чакащи
 					</th>
 					<th
 						v-for="field in eventData.fields"
@@ -140,16 +146,28 @@ watch(eventError, () => {
 					class="transition-colors">
 					<td
 						class="px-6 py-4 whitespace-nowrap text-white"
-						:data-tooltip="formatDateTime(submission.date)">
+						:data-tooltip="submission.email">
 						<div class="truncate max-w-[200px]">
-							{{ formatDateTime(submission.date) }}
+							{{ submission.email }}
 						</div>
 					</td>
 					<td
 						class="px-6 py-4 whitespace-nowrap text-white"
-						:data-tooltip="submission.email">
+						:data-tooltip="formatDateTime(submission.createdAt)">
 						<div class="truncate max-w-[200px]">
-							{{ submission.email }}
+							{{ formatDateTime(submission.createdAt) }}
+						</div>
+					</td>
+					<td
+						class="px-6 py-4 whitespace-nowrap text-white"
+						:data-tooltip="submission.isOnWaitingList">
+						<div v-if="submission.isOnWaitingList == true" 
+						class="truncate max-w-[200px]">
+							Да
+						</div>
+						<div v-else
+						class="truncate max-w-[200px]">
+							Не
 						</div>
 					</td>
 					<td
@@ -157,12 +175,12 @@ watch(eventError, () => {
 						:key="field.id"
 						class="px-6 py-4 whitespace-nowrap text-white"
 						:data-tooltip="
-							getSubmissionField(submission.submissions, field.id)
+							getSubmissionField(submission.answers, field.id)
 						">
 						<div class="truncate max-w-[200px]">
 							{{
 								getSubmissionField(
-									submission.submissions,
+									submission.answers,
 									field.id
 								)
 							}}

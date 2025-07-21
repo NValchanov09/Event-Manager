@@ -7,6 +7,6 @@ namespace EventManagerBackend.Models
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
-        public ICollection<Submit>? Submissions { get; set; }
+        public ICollection<Submission>? Submissions { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace EventManagerBackend.Models
         [Required]
         public DateTime? UpdatedAt { get; set; }
         [JsonIgnore]
-        public ICollection<Submit>? Submissions { get; set; }
+        public ICollection<Submission>? Submissions { get; set; }
 
     }
 }

@@ -219,6 +219,18 @@ const handleSimpleRegistration = async () => {
 				<div class="sticky top-6 space-y-6">
 					<!-- Event Details Grid -->
 					<div class="space-y-4">
+
+						<!-- Location -->
+						<div class="flex items-start gap-3">
+							<LocationIcon />
+							<div class="min-w-0 flex-1">
+								<h3 class="text-lg font-semibold text-white">Място</h3>
+								<p class="text-white/80 break-words">
+									{{ event.location }}
+								</p>
+							</div>
+						</div>
+
 						<!-- Date -->
 						<div class="flex items-start gap-3">
 							<CalendarIcon />
@@ -228,17 +240,6 @@ const handleSimpleRegistration = async () => {
 								</h3>
 								<p class="text-white/80 break-words">
 									{{ formatDateTime(event.date) }}
-								</p>
-							</div>
-						</div>
-
-						<!-- Location -->
-						<div class="flex items-start gap-3">
-							<LocationIcon />
-							<div class="min-w-0 flex-1">
-								<h3 class="text-lg font-semibold text-white">Място</h3>
-								<p class="text-white/80 break-words">
-									{{ event.location }}
 								</p>
 							</div>
 						</div>
@@ -316,7 +317,7 @@ const handleSimpleRegistration = async () => {
 					class="hidden lg:flex justify-end gap-2 xl:gap-3 px-4 xl:px-6">
 					<RouterLink
 						:to="{ name: 'submissions', params: { id: event.id } }"
-						class="bg-cyan text-white px-3 xl:px-4 py-2 rounded-md hover:bg-cyan-800 transition-colors font-medium cursor-pointer whitespace-nowrap">
+						class="bg-cyan text-dark-grey px-3 xl:px-4 py-2 rounded-md hover:bg-cyan-700 transition-colors font-medium cursor-pointer whitespace-nowrap">
 						Попълвания
 					</RouterLink>
 					<button
@@ -326,12 +327,12 @@ const handleSimpleRegistration = async () => {
 					</button>
 					<RouterLink
 						:to="{ name: 'edit-event', params: { id: event.id } }"
-						class="bg-orange text-white px-3 xl:px-4 py-2 rounded-md hover:bg-orange-600 transition-colors font-medium cursor-pointer whitespace-nowrap">
+						class="bg-orange text-dark-grey px-3 xl:px-4 py-2 rounded-md hover:bg-orange-500 transition-colors font-medium cursor-pointer whitespace-nowrap">
 						Редактиране
 					</RouterLink>
 					<button
 						@click="showDeleteConfirmation"
-						class="bg-red text-white px-3 xl:px-4 py-2 rounded-md hover:bg-red-600 transition-colors font-medium cursor-pointer whitespace-nowrap">
+						class="bg-red-500 text-dark-grey px-3 xl:px-4 py-2 rounded-md hover:bg-red-600 transition-colors font-medium cursor-pointer whitespace-nowrap">
 						Изтрий
 					</button>
 				</div>

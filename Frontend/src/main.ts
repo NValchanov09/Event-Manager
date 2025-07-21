@@ -15,9 +15,9 @@ app.use(router);
 const userStore = useUserStore();
 
 if (userStore.refreshToken) {
-	await userStore.refreshAccessToken();
+	const success = await userStore.refreshTokens();
 
-	if (userStore.accessToken) {
+	if (success) {
 		await userStore.fetchUser();
 	}
 }

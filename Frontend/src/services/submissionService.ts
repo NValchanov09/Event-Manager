@@ -1,12 +1,12 @@
 import { apiClient } from "@/utils/api";
-import type { FilledField, GetSubmissionDto } from "@/utils/types.ts";
+import type { Answer, GetSubmissionDto } from "@/utils/types.ts";
 
-export async function createSubmission(eventId: number, submission: FilledField[]) {
-	return apiClient.post(`/submissions/${eventId}`, { submissions: submission });
+export async function createSubmission(eventId: number, submission: Answer[]) {
+	return apiClient.post(`/submissions/${eventId}`, { answers: submission });
 }
 
-export async function updateSubmission(eventId: number, submission: FilledField[]) {
-	return apiClient.put(`/submissions/${eventId}`, { submissions: submission });
+export async function updateSubmission(eventId: number, submission: Answer[]) {
+	return apiClient.put(`/submissions/${eventId}`, { answers: submission });
 }
 
 export async function getSubmissions(eventId: string) {

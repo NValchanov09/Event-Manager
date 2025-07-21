@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { TZDate, tz } from "@date-fns/tz";
+import { bg } from "date-fns/locale";
 
 /**
  * Convert UTC datetime string to local datetime string for datetime-local input
@@ -98,7 +99,7 @@ export const formatDateTime = (utcString: string) => {
 		const utcDate = new Date(properUtcString);
 
 		// Format with timezone conversion for display
-		return format(utcDate, "EEEE, MMMM d, yyyy 'at' HH:mm", {
+		return format(utcDate, "dd/MM/yyyy '-' HH:mm 'ч.'", {
 			in: tz(localTimeZone),
 		});
 	} catch (error) {

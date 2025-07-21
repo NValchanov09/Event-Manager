@@ -26,7 +26,7 @@ namespace EventManagerBackend.Extensions
                 options.RoutePrefix = "docs"; // Swagger UI at https://localhost:<port>/docs
             });
         }
-        public static async Task ConfigureDemoSeederAsync(this WebApplication app)
+        public static async Task ConfigureDemoSeederAsync(this WebApplication app, ISubmissionService submissionService)
         {
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
@@ -39,7 +39,7 @@ namespace EventManagerBackend.Extensions
             await AdministratorSeeder.SeedAsync(userManager, roleManager);
 
             var dbSeeder = new DataSeeder(dbContext);
-            await dbSeeder.SeedAsync();
+            await dbSeeder.SeedAsync(submissionService);
         }
 
 
@@ -101,14 +101,12 @@ namespace EventManagerBackend.Extensions
             ) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
                 
                 var events = service.GetJoinedEvents(fromDate, toDate, activeOnly, userId, alphabetical, sortDescending);
                 return Results.Ok(events);
             })
             .WithSummary("Get joined events for current user")
-            .WithDescription("Returns a list of events the currently authenticated user has joined. If the user hasn't joined any events, returns a 404.");
+            .WithDescription("Returns a list of events the currently authenticated user has joined.");
 
             // Get event by ID
             app.MapGet("/events/{id}",
@@ -116,8 +114,6 @@ namespace EventManagerBackend.Extensions
             (IEventService service, int id, ClaimsPrincipal user) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
 
                 var ev = service.GetEventById(id, userId);
 
@@ -127,7 +123,7 @@ namespace EventManagerBackend.Extensions
                 return Results.Ok(ev);
             })
                 .WithSummary("Get event by ID")
-                .WithDescription("Fetches an event by its unique identifier (ID). If the event doesn't exist, returns a 404 error.");
+                .WithDescription("Fetches an event by its unique identifier (ID).");
 
             //Create new event
             app.MapPost("/events",
@@ -153,9 +149,9 @@ namespace EventManagerBackend.Extensions
 
             app.MapPut("/events/{id}",
             [Authorize(Roles = "Administrator")]
-            async (IEventService service, int id, UpdateEventDto dto, IEmailSender emailSender) =>
+            async (IEventService service, int id, UpdateEventDto dto) =>
             {
-                var success = await service.Update(id, dto, emailSender);
+                var success = await service.Update(id, dto);
                 return success ? Results.Ok() : Results.BadRequest();
             })
             .WithSummary("Update event by ID")
@@ -164,103 +160,79 @@ namespace EventManagerBackend.Extensions
             // Delete event by ID
             app.MapDelete("/events/{id}",
             [Authorize(Roles = "Administrator")]
-            async (IEventService service, int id, IEmailSender emailSender) =>
+            async (IEventService service, int id) =>
             {
-                var success = await service.RemoveById(id, emailSender);
+                var success = await service.RemoveById(id);
                 return success ? Results.Ok() : Results.BadRequest();
             });
 
-            //// SUBMIT ENDPOINTS
+            //// SUBMISSION ENDPOINTS
 
 
             // GET submissions by eventId
             app.MapGet("/submissions/{eventId}",
             [Authorize]
-            (ISubmitService service, int eventId) =>
+            (ISubmissionService service, int eventId) =>
             {
-                var submits = service.GetSubmitsByEventId(eventId);
-                return Results.Ok(submits);
+                var submissions = service.GetSubmissionsByEventId(eventId);
+                return Results.Ok(submissions);
             })
-            .WithSummary("Get all submits for event")
-            .WithDescription("Get all submits for event. Returns empty if the submissions do not exist.");
+            .WithSummary("Get all submissions for event")
+            .WithDescription("Get all submissions for event. Returns empty if the submissions do not exist.");
 
             // GET submissions for current user by eventId
             app.MapGet("/submissions/{eventId}/me",
             [Authorize]
-            (ISubmitService service, int eventId, ClaimsPrincipal user) =>
+            (ISubmissionService service, int eventId, ClaimsPrincipal user) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
 
-                var submits = service.GetSubmitByEventAndUser(eventId, userId);
-                return submits != null ? Results.Ok(submits) : Results.BadRequest();
+                var submissions = service.GetSubmissionByEventAndUser(eventId, userId);
+                return submissions != null ? Results.Ok(submissions) : Results.BadRequest();
             })
             .WithSummary("Fetch current authenticated user for event")
-            .WithDescription("Fetches a submission for the authenticated user by event ID. Returns 400 if the submission does not exist.");
+            .WithDescription("Fetches a submission for the authenticated user by event ID.");
 
-            // Create new submit for authenticated user
+            // Create new submission for authenticated user
             app.MapPost("/submissions/{eventId}",
             [Authorize]
-            (int eventId, CreateSubmitDto dto, ISubmitService service, ClaimsPrincipal user) =>
+            (int eventId, CreateSubmissionDto dto, ISubmissionService service, ClaimsPrincipal user) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
 
                 var created = service.Create(eventId, userId, dto);
                 return created;
             })
-            .WithSummary("Create new submit for authenticated user")
-            .WithDescription("Creates a new submit record for the authenticated user. Returns 409 if one already exists.");
+            .WithSummary("Create new submission for authenticated user")
+            .WithDescription("Creates a new submission for the authenticated user. ");
 
             // PUT endpoint
             app.MapPut("/submissions/{eventId}",
             [Authorize]
-            (int eventId, UpdateSubmitDto dto, ISubmitService service, ClaimsPrincipal user) =>
+            (int eventId, UpdateSubmissionDto dto, ISubmissionService service, ClaimsPrincipal user) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
 
                 var updated = service.UpdateSubmission(eventId, userId, dto);
                 return updated;
             })
             .WithSummary("Update submission for authenticated user")
-            .WithDescription("Updates all submissions for the authenticated user in the specified event. Returns 404 if not found.");
+            .WithDescription("Updates the submission of the authenticated user for the specified event.");
 
-            //Removes a subbmit user from an event
+            //Removes a submission user from an event
            app.MapDelete("/submissions/{eventId}",
            [Authorize]
-           async (int eventId, ISubmitService service, ClaimsPrincipal user, IEmailSender emailSender) =>
+           async (int eventId, ISubmissionService service, ClaimsPrincipal user) =>
            {
                var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-               if (string.IsNullOrEmpty(userId))
-                   return Results.Unauthorized();
 
-               var success = await service.RemoveUserFromEvent(eventId, userId, emailSender);
+               var success = await service.RemoveUserFromEvent(eventId, userId);
                return success;
             })
             .WithSummary("Removes authenticated user from event")
             .WithDescription("Allows user to remove himself from an event and notifies the user by email.");
 
-
-            //Admin delete
-            app.MapDelete("/submissions/{eventId}/{userId}",
-            [Authorize(Roles = "Administrator")]
-            async (int eventId, string userId, ISubmitService service, ClaimsPrincipal user, IEmailSender emailSender) =>
-            {
-
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
-
-                var success = await service.AdminRemoveUserFromEvent(eventId, userId, emailSender);
-                return success ? Results.Ok() : Results.NotFound();
-            })
-            .WithSummary("Remove user submission from event by admin")
-            .WithDescription("Allows an admin to remove a user's submission from a specific event by providing the event ID and user ID.");
-
-            //enpoint to get all users
+            //endpoint to get all users
             app.MapGet("/users",
             [Authorize(Roles = "Administrator")]
             async (UserManager<User> manager) =>
@@ -308,8 +280,6 @@ namespace EventManagerBackend.Extensions
                 var email = principal.FindFirst(ClaimTypes.Email)?.Value;
 
                 var user = await userManager.FindByIdAsync(userId);
-                if (user == null)
-                    return Results.Unauthorized();
 
                 // Set times only if set to null
                 if (user.CreatedAt == null)
@@ -355,7 +325,7 @@ namespace EventManagerBackend.Extensions
             }).WithSummary("Gets information for the current user")
             .WithDescription("Gives UserID, Email, Role, Created At date and Updated At date. If the user doesn't have a role, it assigns the role \"User\".");
 
-            //enpoint-admin makes other users administrators
+            //Administrator promotes user to administrator
             app.MapPost("/users/admin/{id}",
             [Authorize(Roles = "Administrator")]
             async (UserManager<User> userManager, string id) =>
@@ -390,7 +360,7 @@ namespace EventManagerBackend.Extensions
             }).WithSummary("Admin adds new admins.")
             .WithDescription("Only Amins can add new admins as it selects them by ID.");
 
-            //endpoint-admin removes other admins from administrators
+            //Administrator demotes administrator to user
             app.MapDelete("/users/admin/{id}",
             [Authorize(Roles = "Administrator")]
             async (UserManager<User> manager, string id) =>
@@ -426,12 +396,12 @@ namespace EventManagerBackend.Extensions
             }).WithSummary("Removes admin.")
             .WithDescription("Only admins remove other admins which are selected by ID as once the admin role is removed the user gets the role 'User'.");
 
-            // Export submits of a certain event as a .csv file
+            // Export submissions of a certain event as a .csv file
             app.MapGet("/csv/{eventId}",
             [Authorize(Roles = "Administrator")]
             (HttpContext httpContext,
             int eventId,
-            ISubmitService submitService,
+            ISubmissionService submissionService,
             IEventService eventService) =>
             {
                 if (!eventService.Exists(eventId))
@@ -439,12 +409,12 @@ namespace EventManagerBackend.Extensions
                     return Results.NotFound(new { error = "Събитието не беше намерено." });
                 }
 
-                var data = submitService.GetSubmitsByEventId(eventId);
+                var data = submissionService.GetSubmissionsByEventId(eventId);
 
                 // Get all unique submission names (header columns)
-                var submitNames = data
-                    .SelectMany(d => d.Submissions ?? [])
-                    .Select(s => s.Name ?? "")
+                var fieldsNames = data
+                    .SelectMany(d => d.Answers ?? [])
+                    .Select(a => a.Name ?? "")
                     .Distinct()
                     .OrderBy(name => name)
                     .ToList();
@@ -454,7 +424,7 @@ namespace EventManagerBackend.Extensions
                 // Header
                 csvBuilder.Append("Email,");
                 csvBuilder.Append("Date");
-                foreach (var name in submitNames)
+                foreach (var name in fieldsNames)
                 {
                     csvBuilder.Append($",\"{name.Replace("\"", "\"\"")}\"");
                 }
@@ -467,20 +437,20 @@ namespace EventManagerBackend.Extensions
 
                     csvBuilder.Append($"{email},");
 
-                    var date = summary.Date?.ToString("yyyy-MM-dd HH:mm:ss") ?? "";
+                    var date = summary.CreatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "";
                     csvBuilder.Append($"\"{date}\"");
 
-                    var submissionsDict = (summary.Submissions ?? []).ToDictionary(
-                        s => s.Name ?? "",
-                        s => s.Options != null ? string.Join(" \n", s.Options.Select(o => o.Replace("\"", "\"\""))) : ""
+                    var submissionsDict = (summary.Answers ?? []).ToDictionary(
+                        a => a.Name ?? "",
+                        a => a.Options != null ? string.Join(" \n", a.Options.Select(o => o.Replace("\"", "\"\""))) : ""
                     );
 
-                    foreach (var name in submitNames)
+                    foreach (var name in fieldsNames)
                     {
                         if (submissionsDict.TryGetValue(name, out var options))
                             csvBuilder.Append($",\"{options}\"");
                         else
-                            csvBuilder.Append(","); // empty if not answered
+                            csvBuilder.Append(","); // empty if nothing
                     }
 
                     csvBuilder.AppendLine();
@@ -495,16 +465,16 @@ namespace EventManagerBackend.Extensions
 
                 return Results.File(csvBytes, "text/csv; charset=utf-8");
 
-            }).WithSummary("Exports all submits for a certain event in .csv file.")
-            .WithDescription("Exports all submits for a certain event in .csv file. If the event doesn't exist it return code 404.");
+            }).WithSummary("Exports all submissions for a certain event in .csv file.")
+            .WithDescription("Exports all submissions for a certain event in .csv file. If the event doesn't exist it return code 404.");
 
-            // Export submits of a event as a .xlsx file
+            // Export submissions of an event as a .xlsx file
 
             app.MapGet("/xlsx/{eventId}",
             [Authorize(Roles = "Administrator")]
             (HttpContext httpContext,
             int eventId,
-            ISubmitService submitService,
+            ISubmissionService submissionService,
             IEventService eventService) =>
             {
                 if(!eventService.Exists(eventId))
@@ -512,12 +482,12 @@ namespace EventManagerBackend.Extensions
                     return Results.NotFound(new { error = "Събитието не беше намерено." });
                 }
 
-                var data = submitService.GetSubmitsByEventId(eventId);
+                var data = submissionService.GetSubmissionsByEventId(eventId);
 
-                // Get all unique submission names (columns)
-                var submitNames = data
-                    .SelectMany(d => d.Submissions ?? [])
-                    .Select(s => s.Name ?? "")
+                // Get all unique fields names (columns)
+                var fieldsNames = data
+                    .SelectMany(d => d.Answers ?? [])
+                    .Select(a => a.Name ?? "")
                     .Distinct()
                     .OrderBy(name => name)
                     .ToList();
@@ -528,12 +498,12 @@ namespace EventManagerBackend.Extensions
                 // Header row
                 worksheet.Cell(1, 1).Value = "Email";
                 worksheet.Cell(1, 2).Value = "Date";
-                for (int i = 0; i < submitNames.Count; i++)
+                for (int i = 0; i < fieldsNames.Count; i++)
                 {
-                    worksheet.Cell(1, i + 3).Value = submitNames[i];
+                    worksheet.Cell(1, i + 3).Value = fieldsNames[i];
                 }
 
-                int totalColumns = submitNames.Count + 2;
+                int totalColumns = fieldsNames.Count + 2;
                 var headerRange = worksheet.Range(1, 1, 1, totalColumns);
                 headerRange.Style.Font.Bold = true;
                 headerRange.Style.Fill.BackgroundColor = XLColor.LightBlue;
@@ -545,15 +515,15 @@ namespace EventManagerBackend.Extensions
                 foreach (var summary in data)
                 {
                     worksheet.Cell(row, 1).Value = summary.Email ?? "";
-                    worksheet.Cell(row, 2).Value = summary.Date?.ToString("yyyy-MM-dd HH:mm:ss") ?? "";
+                    worksheet.Cell(row, 2).Value = summary.CreatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? "";
 
-                    var submissionsDict = (summary.Submissions ?? []).ToDictionary(
-                    s => s.Name ?? "",
-                    s => s.Options != null ? string.Join(Environment.NewLine, s.Options) : "");
+                    var submissionsDict = (summary.Answers ?? []).ToDictionary(
+                    a => a.Name ?? "",
+                    a => a.Options != null ? string.Join(Environment.NewLine, a.Options) : "");
 
-                    for (int i = 0; i < submitNames.Count; i++)
+                    for (int i = 0; i < fieldsNames.Count; i++)
                     {
-                        var name = submitNames[i];
+                        var name = fieldsNames[i];
                         if (submissionsDict.TryGetValue(name, out var value))
                         {
                             var cell = worksheet.Cell(row, i + 3);
@@ -584,8 +554,8 @@ namespace EventManagerBackend.Extensions
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     "submissions.xlsx");
 
-            }).WithSummary("Exports all submits for a certain event in .xlsx file.")
-            .WithDescription("Exports all submits for a certain event in .xlsx file. If the event doesn't exist it return code 404.");
+            }).WithSummary("Exports all submissions for a certain event in .xlsx file.")
+            .WithDescription("Exports all submissions for a certain event in .xlsx file. If the event doesn't exist it return code 404.");
         }
     }
 }

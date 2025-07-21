@@ -2,7 +2,7 @@
 import { ref, watch, onMounted } from "vue";
 import InputField from "@/components/FormCreator/InputField.vue";
 import LoaderComponent from "@/components/LoaderComponent.vue";
-import type { FilledField, FormField } from "@/utils/types.ts";
+import type { Answer, FormField } from "@/utils/types.ts";
 import { createSubmission, updateSubmission, getSubmission } from "@/services/submissionService";
 import { useUIStore } from "@/stores/uiStore";
 import { useAsync } from "@/composables/useAsync";
@@ -19,18 +19,24 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["signed-up"]);
 
-const formField = (fields: FormField[]): FilledField[] => {
+const formField = (fields: FormField[]): Answer[] => {
 	return fields.map(
 		field =>
 			({
 				id: field.id,
 				name: field.name,
 				options: [],
-			}) as FilledField
+			}) as Answer
 	);
 };
 
-const submission = ref<FilledField[]>(formField(props.fields));
+const submission = ref<{
+  answers: Answer[];
+  isOnWaitingList: boolean;
+}>({
+  answers: formField(props.fields),
+  isOnWaitingList: false,
+});
 
 // Fetch previous submission if user is signed up
 const {
@@ -41,7 +47,8 @@ const {
 	if (props.userSignedUp && props.eventId) {
 		const prevSubmission = await getSubmission(props.eventId.toString());
 		if (prevSubmission) {
-			submission.value = prevSubmission.submissions;
+			submission.value.answers = prevSubmission.answers;
+			submission.value.isOnWaitingList = prevSubmission.isOnWaitingList;
 		}
 	}
 });
@@ -57,10 +64,10 @@ const {
 	}
 
 	if (!props.userSignedUp) {
-		await createSubmission(props.eventId, submission.value);
+		await createSubmission(props.eventId, submission.value.answers);
 		emit("signed-up");
 	} else {
-		await updateSubmission(props.eventId, submission.value);
+		await updateSubmission(props.eventId, submission.value.answers);
 	}
 
 	uiStore.triggerToast("Формулярът беше изпратен успешно!", "success");
@@ -103,6 +110,13 @@ watch(() => props.userSignedUp, fetchSubmission);
 			<div v-if="props.userSignedUp" class="text-green-400 text-center mb-4 text-xl">
 				Вече сте записани за това събитие.
 			</div>
+
+			<div v-if="props.userSignedUp && submission.isOnWaitingList == true" class="text-grey-200 text-center mb-4 text-xl">
+				Вие сте в опашката за чакащи.
+			</div>
+			<div v-else-if="props.userSignedUp && submission.isOnWaitingList == false" class="text-grey-200 text-center mb-4 text-xl">
+				Вие не сте в опашката за чакащи.
+			</div>
 			<div
 				v-for="(field, fieldIndex) in fields"
 				:key="fieldIndex"
@@ -118,7 +132,7 @@ watch(() => props.userSignedUp, fetchSubmission);
 					<InputField
 						:required="field.required"
 						id="`field-${field.id}`"
-						v-model="submission[fieldIndex].options[0]" />
+						v-model="submission.answers[fieldIndex].options[0]" />
 				</div>
 				<div
 					v-else-if="field.type === 'checkbox' || field.type === 'radio'"
@@ -134,9 +148,9 @@ watch(() => props.userSignedUp, fetchSubmission);
 							:name="`field-${field.id}`"
 							:value="field.options[index]"
 							:required="
-								field.required && submission[fieldIndex].options.length === 0
+								field.required && submission.answers[fieldIndex].options.length === 0
 							"
-							v-model="submission[fieldIndex].options"
+							v-model="submission.answers[fieldIndex].options"
 							class="h-5 w-5 text-white border-outline focus:ring-yellow rounded-sm" />
 						<input
 							v-else-if="field.type === 'radio'"
@@ -145,7 +159,7 @@ watch(() => props.userSignedUp, fetchSubmission);
 							:name="`field-${field.id}`"
 							:required="field.required"
 							:value="option"
-							v-model="submission[fieldIndex].options[0]"
+							v-model="submission.answers[fieldIndex].options[0]"
 							class="h-5 w-5 text-white border-outline focus:ring-yellow rounded-sm" />
 						<label :for="`${field.id}-${index}`" class="ml-3 text-base text-white">
 							{{ field.options[index] }}
@@ -156,10 +170,10 @@ watch(() => props.userSignedUp, fetchSubmission);
 					v-if="
 						field.type === 'radio' &&
 						!field.required &&
-						submission[fieldIndex].options.length !== 0
+						submission.answers[fieldIndex].options.length !== 0
 					"
 					class="mt-3 text-black bg-yellow hover:bg-yellow-900 text-sm font-medium rounded-md px-3 py-1.5 transition-colors cursor-pointer"
-					@click.prevent="submission[fieldIndex].options = []">
+					@click.prevent="submission.answers[fieldIndex].options = []">
 					Премахни избраната опция
 				</button>
 			</div>

@@ -118,19 +118,6 @@ watch(
 			</div>
 
 			<div>
-				<label class="text-white mb-1" for="date">
-					Дата <span class="text-red-500">*</span>
-				</label>
-				<input
-					id="date"
-					type="datetime-local"
-					:min="currentLocalDateTime"
-					v-model="formData.date"
-					required
-					class="w-full bg-grey-400 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2" />
-			</div>
-
-			<div>
 				<label class="text-white mb-1" for="location">
 					Местоположение <span class="text-red-500">*</span>
 				</label>
@@ -142,14 +129,15 @@ watch(
 			</div>
 
 			<div>
-				<label class="text-white mb-1" for="peopleLimit">
-					Максимален брой участници (0 = без лимит)
+				<label class="text-white mb-1" for="date">
+					Дата <span class="text-red-500">*</span>
 				</label>
 				<input
-					id="peopleLimit"
-					type="number"
-					min="0"
-					v-model="formData.peopleLimit"
+					id="date"
+					type="datetime-local"
+					:min="currentLocalDateTime"
+					v-model="formData.date"
+					required
 					class="w-full bg-grey-400 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2" />
 			</div>
 
@@ -166,6 +154,18 @@ watch(
 					:class="[
 						'w-full bg-grey-400 text-white rounded-t-lg not-focus:rounded-b-lg border-b placeholder-grey-200 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2 border-grey-400 focus:border-yellow focus:border-b-2',
 					]" />
+			</div>
+
+			<div>
+				<label class="text-white mb-1" for="peopleLimit">
+					Максимален брой участници (0 = без лимит)
+				</label>
+				<input
+					id="peopleLimit"
+					type="number"
+					min="0"
+					v-model="formData.peopleLimit"
+					class="w-full bg-grey-400 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2" />
 			</div>
 
 			<div>
