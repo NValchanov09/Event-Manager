@@ -74,6 +74,7 @@ function handleSubmit() {
 			if (data.value?.accessToken && data.value?.refreshToken) {
 				userStore.setAccessToken(data.value.accessToken);
 				userStore.setRefreshToken(data.value.refreshToken);
+				userStore.startRefreshTokenLoop();
 				triggerToast("Успешно влизане!", "success");
 				router.push("/events");
 			}

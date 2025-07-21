@@ -48,15 +48,11 @@ export const useUserStore = defineStore("user", {
 		},
 		setAccessToken(token: string) {
 			this.accessToken = token;
-
-			console.log("Access Token changed.");
 		},
 		setRefreshToken(token: string) {
 			this.refreshToken = token;
 
 			localStorage.setItem("refreshToken", token);
-
-			console.log("Refresh Token changed.");
 		},
 		async logout() {
 			this.stopRefreshTokenLoop();
