@@ -4,21 +4,34 @@ using EventManagerBackend;
 using EventManagerBackend.Models;
 using EventManagerBackend.Models.DTOs;
 using System.Globalization;
+using EventManagerBackend.Interfaces;
+using System.Threading.Tasks;
 
 public class EventService : IEventService
 {
     private readonly ApplicationDbContext _context;
+    private readonly IImageService _imageService;
 
-
-    public EventService(ApplicationDbContext context)
+    public EventService(ApplicationDbContext context, IImageService imageService)
     {
         _context = context;
+        _imageService = imageService;
     }
 
-    public bool Create(Event newEvent)
+    public async Task<Event> Create(CreateEventDto dto)
     {
-        _context.Events.Add(newEvent);
-        return _context.SaveChanges() != 0;
+        var result = await _imageService.UploadImageAsync(dto.Image);
+        string imageUrl = result.Url.ToString();
+
+        Event evn = EventMapper.ToEntity(imageUrl, dto);
+        _context.Events.Add(evn);
+
+        var success = _context.SaveChanges() != 0;
+
+        if (success)
+            return evn;
+
+        return null;
     }
 
     public Event? GetEventById(int eventId)

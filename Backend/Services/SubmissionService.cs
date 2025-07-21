@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using EventManagerBackend;
 using EventManagerBackend.Models;
 using EventManagerBackend.Models.DTOs;
+using EventManagerBackend.Interfaces;
 
 public class SubmissionService : ISubmissionService
 {
@@ -39,8 +40,8 @@ public class SubmissionService : ISubmissionService
         if (_context.Events.Find(eventId).SignUpDeadline < DateTime.UtcNow)
             return Results.BadRequest(new { error = "Срокът за записване е изтекъл!"});
 
-        bool isOnWaitingList = (bool)((_context.Events.Find(eventId).PeopleLimit) <= (_context.Submissions
-            .Count(s => s.EventId == eventId)));
+        bool isOnWaitingList = _context.Events.Find(eventId).PeopleLimit <= _context.Submissions
+            .Count(s => s.EventId == eventId);
 
         var entity = SubmissionMapper.ToEntity(eventId, userId, isOnWaitingList, dto);
         _context.Submissions.Add(entity);

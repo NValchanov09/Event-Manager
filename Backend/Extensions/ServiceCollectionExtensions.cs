@@ -4,16 +4,21 @@ using Microsoft.OpenApi.Models;
 using EventManagerBackend.Models;
 using System.Reflection;
 using EventManagerBackend.Seeders;
+using EventManagerBackend.Interfaces;
+using EventManagerBackend.Services;
+using EventManagerBackend.Helpers;
 
 namespace EventManagerBackend.Extensions
 {
     public static class ServiceCollectionExtensions
     {
         // Add application services to the IServiceCollection
-        public static IServiceCollection AddAppServices(this IServiceCollection services)
+        public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration config)
         {
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
+            services.AddScoped<IImageService, ImageService>();
+            services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
             services.AddTransient<DataSeeder>();
             return services;
         }

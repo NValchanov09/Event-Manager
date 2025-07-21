@@ -133,12 +133,10 @@ namespace EventManagerBackend.Extensions
                 if (string.IsNullOrWhiteSpace(dto.Name))
                     return Results.BadRequest(new { error = "Името на събитието е задължително." });
 
-                var newEvent = EventMapper.ToEntity(dto);
-
-                var success = service.Create(newEvent);
-
-                return success
-                    ? Results.Created($"/events/{newEvent.Id}", new { newEvent.Id })
+                var result = service.Create(dto);
+                
+                return result is not null
+                    ? Results.Created($"/events/{result.Id}", new { result.Id })
                     : Results.BadRequest(new { error = "Неуспешно създаване на събитие."});
             })
             .WithSummary("Create a new event")

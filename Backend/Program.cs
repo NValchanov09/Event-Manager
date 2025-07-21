@@ -5,7 +5,7 @@ using EventManagerBackend.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddAppServices()
+    .AddAppServices(builder.Configuration)
     .AddAppDbContext(builder.Configuration)
     .AddAppIdentity()
     .AddCorsSupport()

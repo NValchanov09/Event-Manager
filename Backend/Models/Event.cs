@@ -20,6 +20,7 @@ namespace EventManagerBackend.Models
         public string? Location { get; set; }
         [Range(1, int.MaxValue, ErrorMessage = "People limit must be a positive number.")]
         public int? PeopleLimit { get; set; }
+        public string? ImageUrl { get; set; }
         public IList<Field>? Fields { get; set; }
         [Required]
         public DateTime? CreatedAt { get; set; }

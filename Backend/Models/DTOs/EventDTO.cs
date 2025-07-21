@@ -13,6 +13,7 @@ namespace EventManagerBackend.Models.DTOs
         public int? PeopleLimit { get; set; }
         public int? SpotsLeft { get; set; }
         public bool UserSignedUp { get; set; }
+        public string? ImageUrl { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
@@ -28,6 +29,7 @@ namespace EventManagerBackend.Models.DTOs
         public int? PeopleLimit { get; set; }
         public int? SpotsLeft { get; set; }
         public bool UserSignedUp { get; set; }
+        public string? ImageUrl { get; set; }
         public IList<Field>? Fields { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -41,6 +43,7 @@ namespace EventManagerBackend.Models.DTOs
         public DateTime? SignUpDeadline { get; set; }
         public string? Location { get; set; }
         public int? PeopleLimit { get; set; }
+        public IFormFile? Image { get; set; }
         public IList<Field>? Fields { get; set; }
     }
 
@@ -52,6 +55,7 @@ namespace EventManagerBackend.Models.DTOs
         public DateTime? SignUpDeadline { get; set; }
         public string? Location { get; set; }
         public int? PeopleLimit { get; set; }
+        public IFormFile? Image { get; set; }
         public IList<Field>? Fields { get; set; }
     }
 
