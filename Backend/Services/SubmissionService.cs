@@ -17,6 +17,7 @@ public class SubmissionService : ISubmissionService
         return _context.Submissions
             .Include(s => s.User)
             .Where(s => s.EventId == eventId)
+            .OrderBy(s => s.CreatedAt)
             .Select(s => SubmissionMapper.ToSummaryDto(s))
             .ToList();
     }
@@ -38,11 +39,12 @@ public class SubmissionService : ISubmissionService
         if (_context.Events.Find(eventId).SignUpDeadline < DateTime.UtcNow)
             return Results.BadRequest(new { error = "Срокът за записване е изтекъл!"});
 
-        bool isOnWaitingList = _context.Events.Find(eventId).PeopleLimit <= _context.Submissions
-            .Count(s => s.EventId == eventId);
+        bool isOnWaitingList = (bool)((_context.Events.Find(eventId).PeopleLimit) <= (_context.Submissions
+            .Count(s => s.EventId == eventId)));
 
         var entity = SubmissionMapper.ToEntity(eventId, userId, isOnWaitingList, dto);
         _context.Submissions.Add(entity);
+
         return _context.SaveChanges() > 0 ? Results.Created($"/submissions/{eventId}", dto) : Results.InternalServerError("Failed to save submission");
     }
 
@@ -65,25 +67,6 @@ public class SubmissionService : ISubmissionService
         return _context.SaveChanges() > 0 ? Results.Created($"/submissions/{submission.EventId}", new { submission }) : Results.InternalServerError(new { error = "Oбновяването на заявката мина неуспешно." });
     }
 
-
-    // Admin removes user from an Event
-    public async Task<bool> AdminRemoveUserFromEvent(int eventId, string userId)
-    {
-        // Fetch submission with related user and event data
-        var submission = await _context.Submissions
-            .Include(s => s.User)
-            .Include(s => s.Event)
-            .FirstOrDefaultAsync(s => s.EventId == eventId && s.UserId == userId);
-
-        if (submission?.User == null || submission.Event == null)
-            return false;
-
-        // Remove the submission
-        _context.Submissions.Remove(submission);
-        var success = await _context.SaveChangesAsync() > 0;
-
-        return success;
-    }
     //User removes himself from the event
     public async Task<IResult> RemoveUserFromEvent(int eventId, string userId)
     {
@@ -101,6 +84,20 @@ public class SubmissionService : ISubmissionService
 
         if (_context.Events.Find(eventId).SignUpDeadline < DateTime.UtcNow)
             return Results.BadRequest(new { error = "Срокът за отписване е изтекъл!" });
+
+        if(submission.IsOnWaitingList == false)
+        {
+            var nextSubmission = await _context.Submissions
+                .Where(s => s.EventId == eventId && s.IsOnWaitingList == true)
+                .OrderBy(s => s.CreatedAt)
+                .FirstOrDefaultAsync();
+
+            if(nextSubmission != null)
+            {
+                nextSubmission.IsOnWaitingList = false;
+                _context.Submissions.Update(nextSubmission);
+            }
+        }
 
         // Remove the submission
         _context.Submissions.Remove(submission);

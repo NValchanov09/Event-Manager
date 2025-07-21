@@ -11,7 +11,6 @@ namespace EventManagerBackend
         IResult Create(int eventId, string userId, CreateSubmissionDto dto);
         IResult UpdateSubmission(int eventId, string userId, UpdateSubmissionDto dto);
         Task<IResult> RemoveUserFromEvent(int eventId, string userId);
-        Task<bool> AdminRemoveUserFromEvent(int eventId, string userId);
     }
 
 }

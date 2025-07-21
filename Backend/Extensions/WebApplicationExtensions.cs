@@ -26,7 +26,7 @@ namespace EventManagerBackend.Extensions
                 options.RoutePrefix = "docs"; // Swagger UI at https://localhost:<port>/docs
             });
         }
-        public static async Task ConfigureDemoSeederAsync(this WebApplication app)
+        public static async Task ConfigureDemoSeederAsync(this WebApplication app, ISubmissionService submissionService)
         {
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
@@ -39,7 +39,7 @@ namespace EventManagerBackend.Extensions
             await AdministratorSeeder.SeedAsync(userManager, roleManager);
 
             var dbSeeder = new DataSeeder(dbContext);
-            await dbSeeder.SeedAsync();
+            await dbSeeder.SeedAsync(submissionService);
         }
 
 
@@ -101,8 +101,6 @@ namespace EventManagerBackend.Extensions
             ) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
                 
                 var events = service.GetJoinedEvents(fromDate, toDate, activeOnly, userId, alphabetical, sortDescending);
                 return Results.Ok(events);
@@ -116,8 +114,6 @@ namespace EventManagerBackend.Extensions
             (IEventService service, int id, ClaimsPrincipal user) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
 
                 var ev = service.GetEventById(id, userId);
 
@@ -190,8 +186,6 @@ namespace EventManagerBackend.Extensions
             (ISubmissionService service, int eventId, ClaimsPrincipal user) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
 
                 var submissions = service.GetSubmissionByEventAndUser(eventId, userId);
                 return submissions != null ? Results.Ok(submissions) : Results.BadRequest();
@@ -205,8 +199,6 @@ namespace EventManagerBackend.Extensions
             (int eventId, CreateSubmissionDto dto, ISubmissionService service, ClaimsPrincipal user) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
 
                 var created = service.Create(eventId, userId, dto);
                 return created;
@@ -220,8 +212,6 @@ namespace EventManagerBackend.Extensions
             (int eventId, UpdateSubmissionDto dto, ISubmissionService service, ClaimsPrincipal user) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
-                if (string.IsNullOrEmpty(userId))
-                    return Results.Unauthorized();
 
                 var updated = service.UpdateSubmission(eventId, userId, dto);
                 return updated;
@@ -242,19 +232,7 @@ namespace EventManagerBackend.Extensions
             .WithSummary("Removes authenticated user from event")
             .WithDescription("Allows user to remove himself from an event and notifies the user by email.");
 
-
-            //Admin delete
-            app.MapDelete("/submissions/{eventId}/{userId}",
-            [Authorize(Roles = "Administrator")]
-            async (int eventId, string userId, ISubmissionService service, ClaimsPrincipal user) =>
-            {
-                var success = await service.AdminRemoveUserFromEvent(eventId, userId);
-                return success ? Results.Ok() : Results.NotFound();
-            })
-            .WithSummary("Remove user submission from event by admin")
-            .WithDescription("Allows an admin to remove a user's submission from a specific event.");
-
-            //enpoint to get all users
+            //endpoint to get all users
             app.MapGet("/users",
             [Authorize(Roles = "Administrator")]
             async (UserManager<User> manager) =>
@@ -302,8 +280,6 @@ namespace EventManagerBackend.Extensions
                 var email = principal.FindFirst(ClaimTypes.Email)?.Value;
 
                 var user = await userManager.FindByIdAsync(userId);
-                if (user == null)
-                    return Results.Unauthorized();
 
                 // Set times only if set to null
                 if (user.CreatedAt == null)
