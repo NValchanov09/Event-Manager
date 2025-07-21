@@ -97,6 +97,7 @@ dlldata.c
 
 #Docker
 docker-compose.yml
+.env
 
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
