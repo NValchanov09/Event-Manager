@@ -29,14 +29,14 @@ export interface CreateEventDto {
 	peopleLimit?: number;
 }
 
-export interface FilledField {
+export interface Answer {
 	id: number;
 	name: string;
 	options: string[];
 }
 
 export interface GetSubmissionDto {
-	answers: FilledField[];
+	answers: Answer[];
 	createdAt: string;
 	email: string;
 	userId: string;

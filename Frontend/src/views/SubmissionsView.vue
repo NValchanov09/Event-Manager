@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import type { CreateEventDto, FilledField } from "@/utils/types.ts";
+import type { CreateEventDto, Answer } from "@/utils/types.ts";
 import { useRoute } from "vue-router";
 import { apiClient } from "@/utils/api.ts";
 import { downloadFile } from "@/services/exportsService.ts";
@@ -13,7 +13,7 @@ import { extractErrorMessage } from "@/utils/errorHandling";
 
 const uiStore = useUIStore();
 const getSubmissionField = (
-	submission: FilledField[],
+	submission: Answer[],
 	fieldId: number
 ): string => {
 	return submission.find(s => s.id === fieldId)?.options.join(", ") || "-";

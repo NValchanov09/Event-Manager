@@ -2,7 +2,7 @@
 import { ref, watch, onMounted } from "vue";
 import InputField from "@/components/FormCreator/InputField.vue";
 import LoaderComponent from "@/components/LoaderComponent.vue";
-import type { FilledField, FormField } from "@/utils/types.ts";
+import type { Answer, FormField } from "@/utils/types.ts";
 import { createSubmission, updateSubmission, getSubmission } from "@/services/submissionService";
 import { useUIStore } from "@/stores/uiStore";
 import { useAsync } from "@/composables/useAsync";
@@ -19,18 +19,18 @@ const props = defineProps<{
 }>();
 const emit = defineEmits(["signed-up"]);
 
-const formField = (fields: FormField[]): FilledField[] => {
+const formField = (fields: FormField[]): Answer[] => {
 	return fields.map(
 		field =>
 			({
 				id: field.id,
 				name: field.name,
 				options: [],
-			}) as FilledField
+			}) as Answer
 	);
 };
 
-const submission = ref<FilledField[]>(formField(props.fields));
+const submission = ref<Answer[]>(formField(props.fields));
 
 // Fetch previous submission if user is signed up
 const {
