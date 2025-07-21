@@ -99,7 +99,7 @@ export const formatDateTime = (utcString: string) => {
 		const utcDate = new Date(properUtcString);
 
 		// Format with timezone conversion for display
-		return format(utcDate, "dd/MM/yyyy 'от' HH:mm 'ч.'", {
+		return format(utcDate, "dd/MM/yyyy '-' HH:mm 'ч.'", {
 			in: tz(localTimeZone),
 		});
 	} catch (error) {

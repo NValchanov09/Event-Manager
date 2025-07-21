@@ -219,6 +219,18 @@ const handleSimpleRegistration = async () => {
 				<div class="sticky top-6 space-y-6">
 					<!-- Event Details Grid -->
 					<div class="space-y-4">
+
+						<!-- Location -->
+						<div class="flex items-start gap-3">
+							<LocationIcon />
+							<div class="min-w-0 flex-1">
+								<h3 class="text-lg font-semibold text-white">Място</h3>
+								<p class="text-white/80 break-words">
+									{{ event.location }}
+								</p>
+							</div>
+						</div>
+
 						<!-- Date -->
 						<div class="flex items-start gap-3">
 							<CalendarIcon />
@@ -228,17 +240,6 @@ const handleSimpleRegistration = async () => {
 								</h3>
 								<p class="text-white/80 break-words">
 									{{ formatDateTime(event.date) }}
-								</p>
-							</div>
-						</div>
-
-						<!-- Location -->
-						<div class="flex items-start gap-3">
-							<LocationIcon />
-							<div class="min-w-0 flex-1">
-								<h3 class="text-lg font-semibold text-white">Място</h3>
-								<p class="text-white/80 break-words">
-									{{ event.location }}
 								</p>
 							</div>
 						</div>
