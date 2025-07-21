@@ -112,7 +112,10 @@ watch(() => props.userSignedUp, fetchSubmission);
 			</div>
 
 			<div v-if="props.userSignedUp && submission.isOnWaitingList == true" class="text-grey-200 text-center mb-4 text-xl">
-				Вие сте в списъка за чакащи.
+				Вие сте в опашката за чакащи.
+			</div>
+			<div v-else-if="props.userSignedUp && submission.isOnWaitingList == false" class="text-grey-200 text-center mb-4 text-xl">
+				Вие не сте в опашката за чакащи.
 			</div>
 			<div
 				v-for="(field, fieldIndex) in fields"
