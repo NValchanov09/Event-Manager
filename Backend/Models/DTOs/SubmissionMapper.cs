@@ -16,7 +16,7 @@ namespace EventManagerBackend.Models.DTOs
                     Name = a.Name,
                     Options = a.Options
                 }).ToList(),
-                IsOnWaitingList = isOnWaitingList,
+                IsOnWaitingList = (bool)(isOnWaitingList),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -42,6 +42,7 @@ namespace EventManagerBackend.Models.DTOs
             {
                 UserId = submission.UserId,
                 Email = submission.User?.Email,
+                IsOnWaitingList = submission.IsOnWaitingList,
                 CreatedAt = submission.CreatedAt,
                 Answers = submission.Answers
             };
