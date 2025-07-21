@@ -35,7 +35,7 @@ const request = async <TResponse, TBody = unknown>(
 	const res = await fetch(fullUrl, fetchOptions);
 
 	if (res.status == 401 && firstTry) {
-		const success = authStore.refreshAccessToken();
+		const success = authStore.refreshTokens();
 
 		if (!success) {
 			throw new Error("Неуспешно опресняване на токена.");
