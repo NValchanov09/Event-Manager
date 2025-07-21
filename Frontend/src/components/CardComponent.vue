@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="flex flex-col h-full py-4 pl-6 pr-10 gap-5 border-yellow rounded-lg border-2 border-solid bg-dark-grey transition delay-100 duration-300 ease-in-out hover:shadow-xl/30 cursor-pointer"
+		class="flex flex-col h-full py-4 pl-6 pr-10 gap-5 border-yellow rounded-lg border-2 border-solid bg-dark-grey transition duration-200 ease-in-out hover:shadow-xl/30 hover:scale-103 cursor-pointer"
 		@click="redirect"
 		:title="`Кликнете за повече подробности за ${event.name}`">
 		<h1
@@ -23,14 +23,6 @@
 				<span><CalendarIcon /></span>
 				<span class="text-white text-lg break-words min-w-0 flex-1">{{
 					formatDate(event.date)
-				}}</span>
-			</p>
-			<p
-				class="flex pl-2 gap-3 items-start"
-				:title="`Краен срок за записване: ${formatDateTime(event.signUpDeadline)}`">
-				<span><ClockIcon /></span>
-				<span class="text-white text-lg break-words min-w-0 flex-1">{{
-					formatDate(event.signUpDeadline)
 				}}</span>
 			</p>
 			<p
@@ -59,24 +51,18 @@
 					v-if="!event.userSignedUp"
 					@click.stop="redirect"
 					:disabled="event.spotsLeft === 0"
-					:title="
-						event.spotsLeft === 0
-							? 'Няма свободни места за това събитие'
-							: 'Кликнете за повече подробности и записване в събитието'
-					"
+					title="Кликнете за повече подробности и записване в събитието"
 					:class="[
 						'h-10 px-4 py-2 border-2 rounded-2xl border-solid transition-all duration-300 ease-in-out whitespace-nowrap flex items-center justify-center',
-						event.spotsLeft === 0
-							? 'border-grey-400 text-grey-400 cursor-not-allowed opacity-50'
-							: 'text-white border-yellow-500 hover:text-white hover:border-transparent hover:bg-yellow-500 hover:scale-105 hover:shadow-lg',
+						'text-white border-yellow-500 hover:text-white hover:border-transparent hover:bg-yellow-500 hover:scale-105 hover:shadow-lg cursor-pointer',
 					]">
-					{{ event.spotsLeft === 0 ? "Няма места" : "Запиши се" }}
+					Запиши се
 				</button>
 				<button
 					v-else
 					@click.stop="redirect"
 					title="Кликнете за повече подробности и управление на записването"
-					class="h-10 px-4 py-2 border-2 text-white border-red-500 rounded-2xl border-solid transition-all duration-300 ease-in-out whitespace-nowrap flex items-center justify-center hover:text-white hover:border-transparent hover:bg-red-500 hover:scale-105 hover:shadow-lg">
+					class="h-10 px-4 py-2 border-2 text-white border-red-500 rounded-2xl border-solid transition-all duration-300 ease-in-out whitespace-nowrap flex items-center justify-center hover:text-white hover:border-transparent hover:bg-red-500 hover:scale-105 hover:shadow-lg cursor-pointer">
 					Отпиши се
 				</button>
 			</div>
