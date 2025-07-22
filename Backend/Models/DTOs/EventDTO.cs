@@ -1,4 +1,5 @@
 ﻿using EventManagerBackend.Models.JSON;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EventManagerBackend.Models.DTOs
 {
@@ -37,26 +38,26 @@ namespace EventManagerBackend.Models.DTOs
 
     public class CreateEventDto
     {
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public DateTime? Date { get; set; }
-        public DateTime? SignUpDeadline { get; set; }
-        public string? Location { get; set; }
-        public int? PeopleLimit { get; set; }
-        public IFormFile? Image { get; set; }
-        public IList<Field>? Fields { get; set; }
+        [FromForm] public string? Name { get; set; }
+        [FromForm] public string? Description { get; set; }
+        [FromForm] public DateTime? Date { get; set; }
+        [FromForm] public DateTime? SignUpDeadline { get; set; }
+        [FromForm] public string? Location { get; set; }
+        [FromForm] public int? PeopleLimit { get; set; }
+        [FromForm] public IFormFile? Image { get; set; }
+        [FromForm] public IList<Field>? Fields { get; set; }
     }
 
     public class UpdateEventDto
     {
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public DateTime? Date { get; set; }
-        public DateTime? SignUpDeadline { get; set; }
-        public string? Location { get; set; }
-        public int? PeopleLimit { get; set; }
-        public IFormFile? Image { get; set; }
-        public IList<Field>? Fields { get; set; }
+        [FromForm] public string? Name { get; set; }
+        [FromForm] public string? Description { get; set; }
+        [FromForm] public DateTime? Date { get; set; }
+        [FromForm] public DateTime? SignUpDeadline { get; set; }
+        [FromForm] public string? Location { get; set; }
+        [FromForm] public int? PeopleLimit { get; set; }
+        [FromForm] public IFormFile? Image { get; set; }
+        [FromForm] public IList<Field>? Fields { get; set; }
     }
 
 }

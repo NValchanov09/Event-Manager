@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using EventManagerBackend.Helpers;
+using EventManagerBackend.Interfaces;
+using EventManagerBackend.Models;
+using EventManagerBackend.Seeders;
+using EventManagerBackend.Services;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using EventManagerBackend.Models;
 using System.Reflection;
-using EventManagerBackend.Seeders;
-using EventManagerBackend.Interfaces;
-using EventManagerBackend.Services;
-using EventManagerBackend.Helpers;
 
 namespace EventManagerBackend.Extensions
 {
@@ -15,11 +16,16 @@ namespace EventManagerBackend.Extensions
         // Add application services to the IServiceCollection
         public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration config)
         {
-            services.AddScoped<IEventService, EventService>();
-            services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddScoped<IImageService, ImageService>();
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+            services.AddScoped<IEventService, EventService>();
+            services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddTransient<DataSeeder>();
+            services.AddAntiforgery(o => o.SuppressXFrameOptionsHeader = true); // Optional
+            services.Configure<AntiforgeryOptions>(options =>
+            {
+                options.SuppressXFrameOptionsHeader = true;
+            });
             return services;
         }
         // Add application DbContext to the IServiceCollection

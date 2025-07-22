@@ -1,11 +1,12 @@
 ﻿using ClosedXML.Excel;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.EntityFrameworkCore;
 using EventManagerBackend.Models;
 using EventManagerBackend.Models.DTOs;
 using EventManagerBackend.Seeders;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Text;
 
@@ -68,7 +69,7 @@ namespace EventManagerBackend.Extensions
             // Get events with filters (optional parameters)
             app.MapGet("/events",
             [Authorize]
-            (
+            async (
                 IEventService service,
                 HttpContext http,
                 ClaimsPrincipal user,
@@ -89,7 +90,7 @@ namespace EventManagerBackend.Extensions
             //Get users events
             app.MapGet("/events/joined",
             [Authorize]
-            (
+            async (
                 IEventService service,
                 HttpContext http,
                 ClaimsPrincipal user,
@@ -111,7 +112,7 @@ namespace EventManagerBackend.Extensions
             // Get event by ID
             app.MapGet("/events/{id}",
             [Authorize]
-            (IEventService service, int id, ClaimsPrincipal user) =>
+            async (IEventService service, int id, ClaimsPrincipal user) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
 
@@ -128,17 +129,18 @@ namespace EventManagerBackend.Extensions
             //Create new event
             app.MapPost("/events",
             [Authorize(Roles = "Administrator")]
-            (IEventService service, CreateEventDto dto) =>
+            async (IEventService service, [FromForm] CreateEventDto dto) =>
             {
                 if (string.IsNullOrWhiteSpace(dto.Name))
                     return Results.BadRequest(new { error = "Името на събитието е задължително." });
 
                 var result = service.Create(dto);
-                
+
                 return result is not null
                     ? Results.Created($"/events/{result.Id}", new { result.Id })
                     : Results.BadRequest(new { error = "Неуспешно създаване на събитие."});
             })
+            .DisableAntiforgery()
             .WithSummary("Create a new event")
             .WithDescription("Creates a new event with the provided details. The server sets CreatedAt and UpdatedAt.");
 
@@ -147,11 +149,12 @@ namespace EventManagerBackend.Extensions
 
             app.MapPut("/events/{id}",
             [Authorize(Roles = "Administrator")]
-            async (IEventService service, int id, UpdateEventDto dto) =>
+            async (IEventService service, int id, [FromForm] UpdateEventDto dto) =>
             {
                 var success = await service.Update(id, dto);
                 return success ? Results.Ok() : Results.BadRequest();
             })
+            .DisableAntiforgery()
             .WithSummary("Update event by ID")
             .WithDescription("Updates an existing event using its ID and provided details. Returns 404 if not found.");
 
@@ -207,7 +210,7 @@ namespace EventManagerBackend.Extensions
             // PUT endpoint
             app.MapPut("/submissions/{eventId}",
             [Authorize]
-            (int eventId, UpdateSubmissionDto dto, ISubmissionService service, ClaimsPrincipal user) =>
+            async (int eventId, UpdateSubmissionDto dto, ISubmissionService service, ClaimsPrincipal user) =>
             {
                 var userId = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
 

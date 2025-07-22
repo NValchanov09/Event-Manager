@@ -238,6 +238,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 8, 5, 18, 0, 0),
                     SignUpDeadline = new DateTime(2025, 7, 20),
                     Location = "Витоша, хижа Алеко",
+                    ImageUrl = "",
                     PeopleLimit = null,
                     Fields = new List<Field>
                 {
@@ -276,6 +277,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 9, 15, 9, 0, 0),
                     SignUpDeadline = new DateTime(2025, 8, 31),
                     Location = "София, Зала 2 - Бизнес Център",
+                    ImageUrl = "",
                     PeopleLimit = 10,
                     Fields = new List<Field>
                 {
@@ -311,6 +313,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 10, 12, 10, 0, 0),
                     SignUpDeadline = new DateTime(2025, 10, 1),
                     Location = "София Тех Парк",
+                    ImageUrl = "",
                     PeopleLimit = 10,
                     Fields = new List<Field>
                 {
@@ -349,6 +352,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 5, 25, 10, 0, 0),
                     SignUpDeadline = new DateTime(2025, 5, 10),
                     Location = "Сапарева баня",
+                    ImageUrl = "",
                     PeopleLimit = 10,
                     Fields = new List<Field>
                 {
@@ -379,6 +383,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 4, 10, 14, 0, 0),
                     SignUpDeadline = new DateTime(2025, 3, 31),
                     Location = "Онлайн",
+                    ImageUrl = "",
                     PeopleLimit = 10,
                     Fields = new List<Field>
                 {
@@ -406,6 +411,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 8, 22, 9, 0, 0),
                     SignUpDeadline = new DateTime(2025, 8, 10),
                     Location = "Варна, офис пространство",
+                    ImageUrl = "",
                     PeopleLimit = 10,
                     Fields = new List<Field>
                 {
@@ -428,6 +434,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 8, 30, 16, 30, 0),
                     SignUpDeadline = new DateTime(2025, 8, 25),
                     Location = "София, етаж 4 - Конферентна зала",
+                    ImageUrl = "",
                     PeopleLimit = 10,
                     Fields = new List<Field>
                 {
@@ -450,6 +457,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 10, 3, 13, 0, 0),
                     SignUpDeadline = new DateTime(2025, 9, 25),
                     Location = "Пловдив, Конферентен център",
+                    ImageUrl = "",
                     PeopleLimit = 10,
                     Fields = new List<Field>
                 {
@@ -477,6 +485,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 9, 10, 10, 0, 0),
                     SignUpDeadline = new DateTime(2025, 8, 31),
                     Location = "София, парк Борисова градина",
+                    ImageUrl = "",
                     PeopleLimit = 10,
                     Fields = new List<Field>
                 {
@@ -505,7 +514,7 @@ namespace EventManagerBackend.Seeders
             await _context.SaveChangesAsync();
         }
 
-        public async Task SeedSubmissions(ISubmissionService service)
+        public void SeedSubmissions(ISubmissionService service)
         {
             if (_context.Submissions.Any())
                 return;
@@ -912,7 +921,7 @@ namespace EventManagerBackend.Seeders
         {
             await SeedUsers();
             await SeedEvents();
-            await SeedSubmissions(submissionService);
+            SeedSubmissions(submissionService);
         }
     }
 }

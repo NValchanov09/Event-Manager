@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventManagerBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250717175714_Initial")]
+    [Migration("20250722102045_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -44,6 +44,9 @@ namespace EventManagerBackend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Fields")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Location")

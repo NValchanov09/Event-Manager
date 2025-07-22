@@ -30,6 +30,10 @@ if (app.Environment.IsDevelopment())
 
 await app.ConfigureSeederAsync();
 
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseAntiforgery();
+
 // CORS support
 app.UseCors("AllowAll");
 

@@ -4,7 +4,7 @@ namespace EventManagerBackend.Interfaces
 {
     public interface IImageService
     {
-        Task<ImageUploadResult> UploadImageAsync(IFormFile file);
-        Task<DeletionResult> DeleteImageAsync(string publicId);
+        ImageUploadResult UploadImage(IFormFile file);
+        DeletionResult DeleteImage(string publicId);
     }
 }

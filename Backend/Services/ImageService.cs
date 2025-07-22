@@ -3,6 +3,7 @@ using CloudinaryDotNet.Actions;
 using EventManagerBackend.Helpers;
 using EventManagerBackend.Interfaces;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 
 namespace EventManagerBackend.Services
 {
@@ -21,28 +22,38 @@ namespace EventManagerBackend.Services
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<ImageUploadResult> UploadImageAsync(IFormFile file)
+        public ImageUploadResult UploadImage(IFormFile file)
         {
             var uploadResult = new ImageUploadResult();
             if(file.Length > 0)
             {
-                using var stream = file.OpenReadStream();
+                var stream = file.OpenReadStream();
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(file.FileName, stream),
-                    Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face")
+                    Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face"),
+                    UploadPreset = "event-manager"
                 };
 
-                uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                try
+                {
+                    uploadResult = _cloudinary.Upload(uploadParams);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Upload failed: {ex.Message}");
+                }
+
+                stream.Close();
             }
 
             return uploadResult;
         }
 
-        public async Task<DeletionResult> DeleteImageAsync(string publicId)
+        public DeletionResult DeleteImage(string publicId)
         {
             var deleteParams = new DeletionParams(publicId);
-            return await _cloudinary.DestroyAsync(deleteParams);
+            return _cloudinary.Destroy(deleteParams);
         }
     }
 }
