@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using EventManagerBackend;
 using EventManagerBackend.Models;
 using EventManagerBackend.Models.DTOs;
-using EventManagerBackend.Interfaces;
 
 public class SubmissionService : ISubmissionService
 {

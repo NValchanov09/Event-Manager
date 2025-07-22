@@ -5,7 +5,7 @@ using EventManagerBackend.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddAppServices(builder.Configuration)
+    .AddAppServices()
     .AddAppDbContext(builder.Configuration)
     .AddAppIdentity()
     .AddCorsSupport()
@@ -29,10 +29,6 @@ if (app.Environment.IsDevelopment())
 }
 
 await app.ConfigureSeederAsync();
-
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseAntiforgery();
 
 // CORS support
 app.UseCors("AllowAll");

@@ -1,10 +1,9 @@
 ﻿using EventManagerBackend.Models.JSON;
-using EventManagerBackend.Interfaces;
 namespace EventManagerBackend.Models.DTOs
 {
     public static class EventMapper
     {
-        public static Event ToEntity(string imageUrl, CreateEventDto dto)
+        public static Event ToEntity(CreateEventDto dto)
         {
             if (dto.PeopleLimit < 1) { dto.PeopleLimit = null; }
 
@@ -16,7 +15,7 @@ namespace EventManagerBackend.Models.DTOs
                 Date = dto.Date,
                 SignUpDeadline = dto.SignUpDeadline ?? dto.Date ?? DateTime.UtcNow,
                 PeopleLimit = dto.PeopleLimit,
-                ImageUrl = imageUrl,
+                ImageUrl = dto.ImageUrl,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 Fields = dto.Fields?.Select(f => new Field
@@ -37,7 +36,8 @@ namespace EventManagerBackend.Models.DTOs
             if (dto.Location != null) ev.Location = dto.Location;
             if (dto.Date.HasValue) ev.Date = dto.Date;
             if (dto.SignUpDeadline.HasValue) ev.SignUpDeadline = dto.SignUpDeadline;
-            if (dto.PeopleLimit != null) ev.PeopleLimit = dto.PeopleLimit; 
+            if (dto.PeopleLimit != null) ev.PeopleLimit = dto.PeopleLimit;
+            if (dto.ImageUrl != null) ev.ImageUrl = dto.ImageUrl;
 
             // For Fields, you might want to handle add/update/remove carefully
             if (dto.Fields != null)

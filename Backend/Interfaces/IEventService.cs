@@ -6,7 +6,7 @@ namespace EventManagerBackend
 {
     public interface IEventService
     {
-            Event? Create(CreateEventDto dto);
+            bool Create(Event newEvent);
             Event? GetEventById(int eventId);
             EventDetailsDto? GetEventById(int eventId, string userId);
             List<EventSummaryDto> GetEvents(DateTime? fromDate, DateTime? toDate, bool? activeOnly, string userId, bool alphabetical = false, bool sortDescending = false);

@@ -129,15 +129,17 @@ namespace EventManagerBackend.Extensions
             //Create new event
             app.MapPost("/events",
             [Authorize(Roles = "Administrator")]
-            async (IEventService service, [FromForm] CreateEventDto dto) =>
+            async (IEventService service, CreateEventDto dto) =>
             {
                 if (string.IsNullOrWhiteSpace(dto.Name))
                     return Results.BadRequest(new { error = "Името на събитието е задължително." });
 
-                var result = service.Create(dto);
+                var newEvent = EventMapper.ToEntity(dto);
 
-                return result is not null
-                    ? Results.Created($"/events/{result.Id}", new { result.Id })
+                var success = service.Create(newEvent);
+
+                return success
+                    ? Results.Created($"/events/{newEvent.Id}", new { newEvent.Id })
                     : Results.BadRequest(new { error = "Неуспешно създаване на събитие."});
             })
             .DisableAntiforgery()
@@ -149,7 +151,7 @@ namespace EventManagerBackend.Extensions
 
             app.MapPut("/events/{id}",
             [Authorize(Roles = "Administrator")]
-            async (IEventService service, int id, [FromForm] UpdateEventDto dto) =>
+            async (IEventService service, int id, UpdateEventDto dto) =>
             {
                 var success = await service.Update(id, dto);
                 return success ? Results.Ok() : Results.BadRequest();

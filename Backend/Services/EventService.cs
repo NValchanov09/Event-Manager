@@ -1,47 +1,22 @@
-﻿using CloudinaryDotNet.Actions;
-using EventManagerBackend;
-using EventManagerBackend.Interfaces;
+﻿using EventManagerBackend;
 using EventManagerBackend.Models;
 using EventManagerBackend.Models.DTOs;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 using System.Globalization;
-using System.Threading.Tasks;
 
 public class EventService : IEventService
 {
     private readonly ApplicationDbContext _context;
-    private readonly IImageService _imageService;
 
-    public EventService(ApplicationDbContext context, IImageService imageService)
+    public EventService(ApplicationDbContext context)
     {
         _context = context;
-        _imageService = imageService;
     }
 
-    public Event? Create([FromForm] CreateEventDto dto)
+    public bool Create(Event newEvent)
     {
-        if(dto is not null && dto.Image is not null)
-        {
-            var result = _imageService.UploadImage(dto.Image);
-
-            if (result == null)
-                return null;
-
-            string imageUrl = result.Url.ToString();
-
-            Event evn = EventMapper.ToEntity(imageUrl, dto);
-
-            _context.Events.Add(evn);
-
-            var success = _context.SaveChanges() != 0;
-
-            return success ? evn : null;
-        }
-
-        return null;
+        _context.Events.Add(newEvent);
+        return _context.SaveChanges() != 0;
     }
 
     public Event? GetEventById(int eventId)
@@ -224,11 +199,6 @@ public class EventService : IEventService
         if (ev == null)
             return false;
 
-        if (ev is not null && ev.ImageUrl is not null)
-        {
-            _imageService.DeleteImage(ev.ImageUrl);
-        }
-
         _context.Events.Remove(ev);
         return await _context.SaveChangesAsync() > 0;
     }
@@ -244,11 +214,6 @@ public class EventService : IEventService
         if (ev == null)
             return false;
 
-        if(ev is not null && ev.ImageUrl is not null)
-        {
-            _imageService.DeleteImage(ev.ImageUrl);
-        }
-
         var validUsers = ev.Submissions?
             .Where(s => !string.IsNullOrWhiteSpace(s.User?.Email))
             .Select(s => s.User!)
@@ -259,11 +224,7 @@ public class EventService : IEventService
             _context.Submissions.RemoveRange(ev.Submissions);
         }
 
-        var imageResult = _imageService.UploadImage(dto.Image);
-
         EventMapper.UpdateEntity(ev, dto);
-
-        ev.ImageUrl = imageResult.Url.ToString();
 
         _context.Events.Update(ev);
 
