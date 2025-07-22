@@ -15,9 +15,31 @@ const props = withDefaults(
 			signUpDeadline: "",
 			description: "",
 			peopleLimit: 0,
+			imageUrl: ""
 		}),
 	}
 );
+
+const widget = window.cloudinary.createUploadWidget(
+	{
+		cloud_name: import.meta.env.VITE_CLOUD_NAME,
+		upload_preset: import.meta.env.VITE_UPLOAD_PRESET
+	},
+
+	(error, result) => {
+	if(!error && result && result.event === "success") {
+		console.log("Result URL : ", result.info.url);
+		props.event.imageUrl = result.info.url;
+	}
+        
+	}
+)
+
+
+function openUploadWidget() {
+	widget.open();
+}
+
 
 defineExpose({
 	getState: () => {
@@ -39,6 +61,7 @@ defineExpose({
 		return {
 			...rawData,
 			// Convert local times back to UTC for server
+			imageUrl: props.event.imageUrl,
 			date: rawData.date ? localToUtc(rawData.date) : "",
 			signUpDeadline: rawData.signUpDeadline ? localToUtc(rawData.signUpDeadline) : undefined,
 		};
@@ -178,6 +201,17 @@ watch(
 					required
 					class="w-full bg-grey-400 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2"
 					rows="2"></textarea>
+			</div>
+			<div>
+				<label class="text-white mb-1" for="imageUrl">
+					Снимка
+				</label>
+				<button
+				id="imageUrl"
+				type="button"
+				class="h-10 px-4 py-2 border-2 text-white border-yellow-500 rounded-2xl border-solid transition-all duration-300 ease-in-out whitespace-nowrap flex items-center justify-center hover:text-black hover:border-transparent hover:bg-yellow-500 hover:scale-103 hover:shadow-lg cursor-pointer"
+				@click="openUploadWidget()"
+				>Добави снимка</button>
 			</div>
 		</div>
 	</div>

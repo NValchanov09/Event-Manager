@@ -17,6 +17,7 @@ export interface Event {
 	spotsLeft: number;
 	peopleLimit?: number;
 	userSignedUp: boolean;
+	imageUrl?: string;
 }
 
 export interface CreateEventDto {
@@ -27,6 +28,7 @@ export interface CreateEventDto {
 	location: string;
 	fields: FormField[];
 	peopleLimit?: number;
+	imageUrl?: string;
 }
 
 export interface Answer {
@@ -61,4 +63,5 @@ export interface UpdateEventDto {
 	location?: string;
 	fields?: FormField[];
 	peopleLimit?: number;
+	imageUrl?: string;
 }
