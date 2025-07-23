@@ -188,12 +188,12 @@ const handleSimpleRegistration = async () => {
 				<!-- Mobile Action Icons (only visible on mobile) -->
 				<div v-if="userStore.isAdmin" class="flex justify-center gap-4 py-2 lg:hidden">
 					<!-- Event Administration Icons -->
-					<button
-						@click="showDeleteConfirmation"
-						class="w-10 h-10 rounded-full bg-red flex items-center justify-center flex-shrink-0 cursor-pointer hover:scale-110 transition-transform text-white"
-						title="Изтрий събитие">
-						<DeleteIcon />
-					</button>
+					 <RouterLink
+						:to="{ name: 'submissions', params: { id: event.id } }"
+						class="w-10 h-10 rounded-full bg-cyan flex items-center justify-center flex-shrink-0 cursor-pointer hover:scale-110 transition-transform text-white"
+						title="Попълвания">
+						<ViewSubmissionsIcon />
+					</RouterLink>
 					<button
 						@click="duplicateEvent"
 						class="w-10 h-10 rounded-full bg-yellow flex items-center justify-center flex-shrink-0 cursor-pointer hover:scale-110 transition-transform text-dark-grey"
@@ -206,13 +206,12 @@ const handleSimpleRegistration = async () => {
 						title="Редактиране">
 						<EditIcon />
 					</RouterLink>
-					<RouterLink
-						v-if="userStore.isAdmin"
-						:to="{ name: 'submissions', params: { id: event.id } }"
-						class="w-10 h-10 rounded-full bg-cyan flex items-center justify-center flex-shrink-0 cursor-pointer hover:scale-110 transition-transform text-white"
-						title="Попълвания">
-						<ViewSubmissionsIcon />
-					</RouterLink>
+					<button
+						@click="showDeleteConfirmation"
+						class="w-10 h-10 rounded-full bg-red flex items-center justify-center flex-shrink-0 cursor-pointer hover:scale-110 transition-transform text-white"
+						title="Изтрий събитие">
+						<DeleteIcon />
+					</button>
 				</div>
 
 				<!-- Event Information (without title) -->
