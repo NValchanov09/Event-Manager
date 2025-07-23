@@ -125,34 +125,34 @@ watch(
 <template>
 	<div class="sticky top-6 p-6 bg-dark-grey shadow-lg rounded-lg max-w-4xl mx-auto space-y-6">
 		<div class="flex flex-col gap-4">
-			<h2 class="text-white text-2xl font-semibold text-center mb-3">
+			<h2 class="text-white text-2xl font-semibold text-center mb-2 ml-3 mr-3">
 				Информация за събитието
 			</h2>
 
 			<div>
-				<label class="text-white mb-1" for="name">
+				<label class="text-white" for="name">
 					Име <span class="text-red-500">*</span>
 				</label>
 				<input
 					id="name"
 					v-model="formData.name"
 					required
-					class="w-full bg-grey-400 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2" />
+					class="w-full bg-grey-400 mt-1 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2" />
 			</div>
 
 			<div>
-				<label class="text-white mb-1" for="location">
+				<label class="text-white" for="location">
 					Местоположение <span class="text-red-500">*</span>
 				</label>
 				<input
 					id="location"
 					v-model="formData.location"
 					required
-					class="w-full bg-grey-400 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2" />
+					class="w-full bg-grey-400 mt-1 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2" />
 			</div>
 
 			<div>
-				<label class="text-white mb-1" for="date">
+				<label class="text-white" for="date">
 					Дата <span class="text-red-500">*</span>
 				</label>
 				<input
@@ -161,7 +161,7 @@ watch(
 					:min="currentLocalDateTime"
 					v-model="formData.date"
 					required
-					class="w-full bg-grey-400 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2" />
+					class="w-full bg-grey-400 mt-1 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2" />
 			</div>
 
 			<div>
@@ -175,7 +175,7 @@ watch(
 					:max="maxSignUpDeadline"
 					v-model="formData.signUpDeadline"
 					:class="[
-						'w-full bg-grey-400 text-white rounded-t-lg not-focus:rounded-b-lg border-b placeholder-grey-200 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2 border-grey-400 focus:border-yellow focus:border-b-2',
+						'w-full bg-grey-400 text-white mt-1 rounded-t-lg not-focus:rounded-b-lg border-b placeholder-grey-200 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2 border-grey-400 focus:border-yellow focus:border-b-2',
 					]" />
 			</div>
 
@@ -188,7 +188,7 @@ watch(
 					type="number"
 					min="0"
 					v-model="formData.peopleLimit"
-					class="w-full bg-grey-400 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2" />
+					class="w-full bg-grey-400 text-white mt-1 rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2" />
 			</div>
 
 			<div>
@@ -199,17 +199,17 @@ watch(
 					id="description"
 					v-model="formData.description"
 					required
-					class="w-full bg-grey-400 text-white rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2"
-					rows="2"></textarea>
+					class="w-full overflow-y-scroll bg-grey-400 text-white mt-1 rounded-t-lg not-focus:rounded-b-lg border-b border-grey-400 placeholder-grey-200 focus:border-yellow focus:border-b-2 focus:ring-0 focus:outline-none transition-colors duration-300 ease-in-out overflow-hidden leading-tight px-3 py-2"
+					rows="15"></textarea>
 			</div>
 			<div>
-				<label class="text-white mb-1" for="imageUrl">
+				<label class="text-white" for="imageUrl">
 					Снимка
 				</label>
 				<button
 				id="imageUrl"
 				type="button"
-				class="h-10 px-4 py-2 border-2 text-white border-yellow-500 rounded-2xl border-solid transition-all duration-300 ease-in-out whitespace-nowrap flex items-center justify-center hover:text-black hover:border-transparent hover:bg-yellow-500 hover:scale-103 hover:shadow-lg cursor-pointer"
+				class="h-13 px-4 py-2 border-2 text-lg text-white mt-2 border-yellow-500 rounded-2xl border-solid transition-all duration-300 ease-in-out whitespace-nowrap flex items-center justify-center hover:text-black hover:border-transparent hover:bg-yellow-500 hover:scale-103 hover:shadow-lg cursor-pointer"
 				@click="openUploadWidget()"
 				>Добави снимка</button>
 			</div>
