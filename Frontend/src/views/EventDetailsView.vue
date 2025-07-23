@@ -221,7 +221,7 @@ const handleSimpleRegistration = async () => {
 					<div class="space-y-4">
 
 						<!-- Image -->
-						<div class="mb-6">
+						<div class="mb-6 flex justify-center">
 							<div class="responsive-image-container relative group overflow-hidden rounded-xl shadow-lg bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10">
 								<!-- Main Event Image -->
 								<div class="relative">
