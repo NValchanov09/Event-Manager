@@ -110,7 +110,7 @@ async function handleSubmit() {
 					<button
 						type="submit"
 						class="w-full py-3 rounded-lg font-semibold transition-all cursor-pointer mt-6 bg-yellow text-dark-grey hover:opacity-90">
-						{{ isCreating ? "Създава се..." : "Запази информацията" }}
+						{{ isCreating ? "Създава се..." : "Запазете информацията" }}
 					</button>
 				</template>
 			</TwoPanelLayout>

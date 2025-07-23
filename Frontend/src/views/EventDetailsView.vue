@@ -368,7 +368,7 @@ const handleSimpleRegistration = async () => {
 					:on-cancel="cancelSubmissionButton"
 					:cancel-loading="cancellingSubmission"
 					:spots-left="event.spotsLeft"
-					action-name="Запиши се"
+					action-name="Запишете се"
 					@signed-up="event.userSignedUp = true" />
 				
 			</div>

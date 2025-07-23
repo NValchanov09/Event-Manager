@@ -157,7 +157,7 @@ function cancelSubmit() {
 					<button
 						type="submit"
 						class="w-full py-3 rounded-lg font-semibold transition-all cursor-pointer mt-6 bg-yellow text-dark-grey hover:opacity-90">
-						{{ isUpdating ? "Запазва се..." : "Запази промените" }}
+						{{ isUpdating ? "Запазва се..." : "Запазете промените" }}
 					</button>
 				</template>
 			</template>
@@ -167,7 +167,7 @@ function cancelSubmit() {
 	<ConfirmationComponent
 		v-if="showConfirmDialog"
 		title="Потвърдете редактирането"
-		message="Редактирането на това събитие ще изтрие всички съществуващи регистрации. Тази операция не може да бъде отменена. Сигурни ли сте, че искате да продължите?"
+		message="Ако сте направили промени по формуляра на събитието, всички записвания за това събитие ще бъдат изтрити. Тази операция не може да бъде отменена в бъдеще. Сигурни ли сте, че искате да продължите?"
 		confirm-text="Редактирай"
 		cancel-text="Откажи"
 		@confirm="confirmSubmit"
