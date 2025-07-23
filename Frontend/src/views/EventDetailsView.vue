@@ -180,7 +180,7 @@ const handleSimpleRegistration = async () => {
 				<!-- Event Title -->
 				<div class="border-b border-white/20 pb-4">
 					<h1
-						class="text-3xl font-bold text-yellow break-words hyphens-auto leading-tight">
+						class="text-4xl font-bold text-yellow break-words hyphens-auto leading-tight">
 						{{ event.name }}
 					</h1>
 				</div>
@@ -242,10 +242,8 @@ const handleSimpleRegistration = async () => {
 							</div>
 						</div>
 
-						<hr class="my-12 h-0.5 border-t-0 bg-neutral-100 dark:bg-white/10" />
-
 						<!-- Location -->
-						<div class="flex items-start gap-3">
+						<div class="flex items-start gap-3 border-t border-white/20 pt-6">
 							<LocationIcon />
 							<div class="min-w-0 flex-1">
 								<h3 class="text-lg font-semibold text-white">Място</h3>
