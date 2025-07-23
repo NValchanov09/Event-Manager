@@ -17,7 +17,7 @@ services:
       - app-network
 
   eventmanagerserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/mssql/server
     container_name: sqlserver
     environment:
       ACCEPT_EULA: "Y"
