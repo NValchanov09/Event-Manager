@@ -457,7 +457,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 10, 3, 13, 0, 0),
                     SignUpDeadline = new DateTime(2025, 9, 25),
                     Location = "Пловдив, Конферентен център",
-                    ImageUrl = "https://res.cloudinary.com/dedirxcxp/image/upload/v1753266188/autumn_mj4wba.png",
+                    ImageUrl = "https://res.cloudinary.com/dedirxcxp/image/upload/v1753274062/tech_h2h6yp.jpg",
                     PeopleLimit = 10,
                     Fields = new List<Field>
                 {
@@ -485,7 +485,7 @@ namespace EventManagerBackend.Seeders
                     Date = new DateTime(2025, 9, 10, 10, 0, 0),
                     SignUpDeadline = new DateTime(2025, 8, 31),
                     Location = "София, парк Борисова градина",
-                    ImageUrl = "https://res.cloudinary.com/dedirxcxp/image/upload/v1753266189/ChatGPT_Image_Jul_23_2025_01_12_54_PM_mvtasu.png",
+                    ImageUrl = "https://res.cloudinary.com/dedirxcxp/image/upload/v1753274063/yoga_jppbxg.png",
                     PeopleLimit = 10,
                     Fields = new List<Field>
                 {
