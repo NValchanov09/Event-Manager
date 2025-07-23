@@ -13,6 +13,7 @@ const props = defineProps<{
 	actionName: string;
 	fields: FormField[];
 	eventId: number;
+	spotsLeft: number;
 	userSignedUp: boolean;
 	onCancel?: () => void;
 	cancelLoading?: boolean;
@@ -98,7 +99,7 @@ watch(() => props.userSignedUp, fetchSubmission);
 
 		<!-- Main Form -->
 		<form v-else class="space-y-6" @submit.prevent="submitForm()">
-			<h1 class="text-2xl font-semibold text-white text-center">Преглед на формуляр</h1>
+			<h1 v-if="fields.length > 0" class="text-2xl font-semibold text-white text-center">Преглед на формуляр</h1>
 
 			<!-- Submit Error State -->
 			<div
@@ -108,15 +109,27 @@ watch(() => props.userSignedUp, fetchSubmission);
 			</div>
 
 			<div v-if="props.userSignedUp" class="text-green-400 text-center mb-4 text-xl">
-				Вече сте записани за това събитие.
+				Записани сте за това събитие.
 			</div>
 
-			<div v-if="props.userSignedUp && submission.isOnWaitingList == true" class="text-grey-200 text-center mb-4 text-xl">
+			<div v-if="props.userSignedUp && submission.isOnWaitingList" class="text-grey-200 text-center mb-4 text-xl">
 				Вие сте в опашката за чакащи.
 			</div>
-			<div v-else-if="props.userSignedUp && submission.isOnWaitingList == false" class="text-grey-200 text-center mb-4 text-xl">
+			<div v-else-if="props.userSignedUp && !submission.isOnWaitingList" class="text-grey-200 text-center mb-4 text-xl">
 				Вие не сте в опашката за чакащи.
 			</div>
+
+			<div v-if="!props.userSignedUp" class="text-red-400 text-center mb-4 text-xl">
+				Не сте записани за това събитие.
+			</div>
+
+			<div v-if="!props.userSignedUp && (props.spotsLeft === null || props.spotsLeft > 0)" class="text-grey-200 text-center mb-4 text-xl">
+				Moже да се запишете за това събитие.
+			</div>
+			<div v-else-if="!props.userSignedUp && (props.spotsLeft !== null && props.spotsLeft === 0)" class="text-grey-200 text-center mb-4 text-xl">
+				Може да се запишете в опашката за чакащи.
+			</div>
+
 			<div
 				v-for="(field, fieldIndex) in fields"
 				:key="fieldIndex"
@@ -174,7 +187,7 @@ watch(() => props.userSignedUp, fetchSubmission);
 					"
 					class="mt-3 text-black bg-yellow hover:bg-yellow-900 text-sm font-medium rounded-md px-3 py-1.5 transition-colors cursor-pointer"
 					@click.prevent="submission.answers[fieldIndex].options = []">
-					Премахни избраната опция
+					Премахнете избраната опция
 				</button>
 			</div>
 
@@ -191,7 +204,7 @@ watch(() => props.userSignedUp, fetchSubmission);
 					type="submit"
 					:disabled="submittingForm"
 					class="cursor-pointer py-3 px-8 shadow-md text-base font-medium rounded-full text-gray-900 bg-yellow hover:bg-yellow-900 transition duration-150 ease-in-out whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
-					{{ submittingForm ? "Изпраща се..." : "Промени отговора" }}
+					{{ submittingForm ? "Изпраща се..." : "Променете отговора си" }}
 				</button>
 				<button
 					v-if="props.userSignedUp && props.onCancel"
@@ -199,7 +212,7 @@ watch(() => props.userSignedUp, fetchSubmission);
 					:disabled="submittingForm || props.cancelLoading"
 					@click="props.onCancel"
 					class="cursor-pointer py-3 px-8 shadow-md text-base font-medium rounded-full text-white bg-red hover:bg-red-800 transition duration-150 ease-in-out whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
-					{{ props.cancelLoading ? "Отписва се..." : "Отпиши се" }}
+					{{ props.cancelLoading ? "Отписвате се..." : "Отпишете се" }}
 				</button>
 			</div>
 		</form>

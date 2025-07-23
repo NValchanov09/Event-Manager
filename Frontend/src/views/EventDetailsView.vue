@@ -65,6 +65,7 @@ const duplicateEvent = () => {
 			location: event.value.location,
 			fields: event.value.fields,
 			peopleLimit: event.value.peopleLimit,
+			imageUrl: event.value.imageUrl
 		};
 		setEventForDuplication(eventToDuplicate);
 		router.push("/events/create");
@@ -361,65 +362,15 @@ const handleSimpleRegistration = async () => {
 
 				<!-- Submission Form or Simple Registration -->
 				<FormSubmit
-					v-if="event?.fields && event.fields.length > 0"
 					:event-id="event?.id"
 					:fields="event.fields"
 					:user-signed-up="event.userSignedUp"
 					:on-cancel="cancelSubmissionButton"
 					:cancel-loading="cancellingSubmission"
+					:spots-left="event.spotsLeft"
 					action-name="Запиши се"
 					@signed-up="event.userSignedUp = true" />
-
-				<!-- Simple Registration for events without form fields -->
-				<div
-					v-else-if="event"
-					class="p-6 bg-dark-grey shadow-lg rounded-lg max-w-4xl mx-auto my-8">
-					<!-- Cancellation Error Display -->
-					<div
-						v-if="cancelError"
-						class="bg-red/20 border border-red text-white px-4 py-3 rounded mb-4">
-						{{ extractErrorMessage(cancelError, "Грешка при отписване") }}
-					</div>
-
-					<!-- Registration Error Display -->
-					<div
-						v-if="registerError"
-						class="bg-red/20 border border-red text-white px-4 py-3 rounded mb-4">
-						{{ extractErrorMessage(registerError, "Грешка при записване") }}
-					</div>
-
-					<div v-if="event.userSignedUp" class="text-green-400 text-center mb-4 text-xl">
-						Вече сте записани за това събитие.
-					</div>
-
-					<div class="pt-4 flex flex-wrap justify-center gap-4">
-						<button
-							v-if="!event.userSignedUp"
-							@click="() => handleSimpleRegistration()"
-							:disabled="event.spotsLeft === 0 || registeringSubmission"
-							:class="[
-								'cursor-pointer py-3 px-8 shadow-md text-base font-medium rounded-full transition duration-150 ease-in-out whitespace-nowrap',
-								event.spotsLeft === 0 || registeringSubmission
-									? 'bg-grey-400 text-grey-600 cursor-not-allowed opacity-50'
-									: 'text-gray-900 bg-yellow hover:bg-yellow-900 disabled:opacity-50 disabled:cursor-not-allowed',
-							]">
-							{{
-								registeringSubmission
-									? "Записва се..."
-									: event.spotsLeft === 0
-										? "Няма свободни места"
-										: "Запиши се"
-							}}
-						</button>
-						<button
-							v-if="event.userSignedUp"
-							:disabled="cancellingSubmission"
-							@click="cancelSubmissionButton"
-							class="cursor-pointer py-3 px-8 shadow-md text-base font-medium rounded-full text-white bg-red hover:bg-red-800 transition duration-150 ease-in-out whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
-							{{ cancellingSubmission ? "Отписва се..." : "Отпиши се" }}
-						</button>
-					</div>
-				</div>
+				
 			</div>
 		</template>
 	</TwoPanelLayout>
