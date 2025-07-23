@@ -243,6 +243,8 @@ const handleSimpleRegistration = async () => {
 							</div>
 						</div>
 
+						<hr class="my-12 h-0.5 border-t-0 bg-neutral-100 dark:bg-white/10" />
+
 						<!-- Location -->
 						<div class="flex items-start gap-3">
 							<LocationIcon />
@@ -443,14 +445,14 @@ const handleSimpleRegistration = async () => {
         
 .responsive-image-container {
     max-height: var(--image-height);
-	min-height: var(--image-height);
+	/* min-height: var(--image-height); */
     width: fit-content;
     max-width: 100%;
 }
         
 .responsive-image {
     max-height: var(--image-height);
-	min-height: var(--image-height);
+	/* min-height: var(--image-height); */
     width: auto;
     height: auto;
     object-fit: contain;
