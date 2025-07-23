@@ -220,6 +220,29 @@ const handleSimpleRegistration = async () => {
 					<!-- Event Details Grid -->
 					<div class="space-y-4">
 
+						<!-- Image -->
+						<div class="mb-6">
+							<div class="responsive-image-container relative group overflow-hidden rounded-xl shadow-lg bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10">
+								<!-- Main Event Image -->
+								<div class="relative">
+									<img 
+										:src="event.imageUrl" 
+										:alt="event.name"
+										class="responsive-image w-full"
+									/>
+									
+									<!-- Gradient -->
+									<div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-50"></div>
+									
+									<!-- Image Enhancement Overlay on Hover -->
+									<div class="absolute inset-0 bg-gradient-to-t from-yellow-200/8 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+								</div>
+								
+								<!-- Corner Decoration -->
+								<div class="absolute top-0 right-0 w-12 h-12 bg-gradient-to-bl from-yellow-200/8 to-transparent rounded-bl-full"></div>
+							</div>
+						</div>
+
 						<!-- Location -->
 						<div class="flex items-start gap-3">
 							<LocationIcon />
@@ -412,3 +435,24 @@ const handleSimpleRegistration = async () => {
 		confirmText="Изтрий"
 		cancelText="Откажи" />
 </template>
+
+<style scoped>
+* {
+    --image-height: 400px;
+}
+        
+.responsive-image-container {
+    max-height: var(--image-height);
+	min-height: var(--image-height);
+    width: fit-content;
+    max-width: 100%;
+}
+        
+.responsive-image {
+    max-height: var(--image-height);
+	min-height: var(--image-height);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+</style>
