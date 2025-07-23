@@ -1,6 +1,7 @@
 ﻿using EventManagerBackend;
 using EventManagerBackend.Models;
 using EventManagerBackend.Models.DTOs;
+using EventManagerBackend.Models.JSON;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -203,7 +204,6 @@ public class EventService : IEventService
         return await _context.SaveChangesAsync() > 0;
     }
 
-
     public async Task<bool> Update(int eventId, UpdateEventDto dto)
     {
         var ev = await _context.Events
@@ -219,7 +219,7 @@ public class EventService : IEventService
             .Select(s => s.User!)
             .Distinct();
 
-        if (validUsers != null)
+        if (validUsers != null && !compareFields(dto.Fields, ev.Fields))
         {
             _context.Submissions.RemoveRange(ev.Submissions);
         }
@@ -229,6 +229,29 @@ public class EventService : IEventService
         _context.Events.Update(ev);
 
         return await _context.SaveChangesAsync() > 0;
+    }
+
+    private bool compareFields(IList<Field>? newFields, IList<Field>? oldFields)
+    {
+        if (newFields == null && oldFields == null) return true;
+        if (newFields == null || oldFields == null) return false;
+        if (newFields.Count != oldFields.Count) return false;
+
+        for (int i = 0; i < newFields.Count; i++)
+        {
+            if (newFields[i].Id != oldFields[i].Id)
+                return false;
+
+            if (newFields[i].Name != oldFields[i].Name)
+                return false;
+
+            if (newFields[i].Type != oldFields[i].Type)
+                return false;
+
+            if (newFields[i].Required == true && oldFields[i].Required == false)
+                return false;
+        }
+        return true;
     }
 
     public bool Exists(int eventId)
